@@ -67,7 +67,7 @@ section:focus,header:focus,footer:focus{outline:none}
 .band .h-sub+.prose{margin-top:0}
 .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,320px);gap:clamp(32px,6vw,96px);align-items:start}
 .row.flip{grid-template-columns:minmax(230px,380px) minmax(0,1fr)}
-.row.wide-side{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:center}
+.row.wide-side{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);align-items:start}
 .prose{max-width:680px}
 .prose p{margin:0 0 1.15em}
 .prose p:last-child{margin-bottom:0}
@@ -75,7 +75,7 @@ section:focus,header:focus,footer:focus{outline:none}
 .cols2{max-width:none;columns:2;column-gap:clamp(40px,5vw,72px)}
 .side{display:grid;gap:44px;align-content:start;position:sticky;top:14vh}
 .row.flip>figure{position:sticky;top:12vh}
-.row.wide-side>figure{position:static}
+.row.wide-side>figure{position:sticky;top:max(12vh,(100vh - 34vw)/2)}
 
 /* ---------- stats (the report's pie discs) ---------- */
 .stat{display:grid;grid-template-columns:88px minmax(0,1fr);gap:20px;align-items:center}
@@ -108,6 +108,9 @@ section:focus,header:focus,footer:focus{outline:none}
 .over.box p{font-size:16.5px;line-height:1.62}
 .photo-band.boxed{height:auto;min-height:clamp(560px,92vh,820px)}
 .photo-band.boxed::after{display:none}
+.js .credit{opacity:0;transition:opacity .6s ease .7s}
+.js .ld>.credit{opacity:1}
+.js .rv-clip:not(.in)>.credit,.js .rec:not(.in) .credit{opacity:0}
 .credit{position:absolute;z-index:3;right:14px;bottom:10px;font:400 11.5px/1 var(--body);letter-spacing:.02em;color:rgba(255,255,255,.86);text-shadow:0 1px 3px rgba(0,0,0,.6)}
 .frame{position:relative;overflow:hidden;border-radius:4px}
 .frame img{width:100%;height:auto}
@@ -119,7 +122,7 @@ section:focus,header:focus,footer:focus{outline:none}
 .duo figure{position:relative;overflow:hidden}
 .plate{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:clamp(16px,3vw,40px)}
 .plate.bare{border:0;padding:0;border-radius:0}
-.plate figcaption,.platform figcaption{font-size:14.5px;line-height:1.5;color:var(--muted);margin-top:20px;max-width:46em}
+.plate figcaption,.platform figcaption{font-size:14.5px;line-height:1.5;color:var(--muted);margin-top:20px;text-wrap:balance}
 .plate figcaption b{color:var(--ink)}
 .plate img{width:100%;height:auto}
 .scrollx{overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -145,15 +148,13 @@ section:focus,header:focus,footer:focus{outline:none}
 .recs-head{display:flex;align-items:center;gap:22px}
 .recs-head img{width:88px;height:88px;flex:none}
 .recs-head h3{font:400 clamp(25px,2.8vw,38px)/1.12 var(--disp);color:var(--acc2);text-wrap:balance}
-.recs-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,360px);gap:clamp(32px,6vw,88px);margin-top:clamp(32px,6vh,60px)}
-.recs{list-style:none;counter-reset:rec;display:grid;gap:46px}
-.rec{counter-increment:rec;position:relative;padding-left:78px}
+.recs{list-style:none;counter-reset:rec;display:grid;gap:clamp(40px,7vh,64px);margin-top:clamp(32px,6vh,60px)}
+.rec{counter-increment:rec;position:relative;padding-left:78px;display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,360px);gap:clamp(28px,5vw,80px);align-items:start}
+.rec-fig{position:relative;overflow:hidden;border-radius:4px;aspect-ratio:3/2;margin-top:6px}
+.rec-fig img{width:100%;height:100%;object-fit:cover}
 .rec::before{content:counter(rec);position:absolute;left:0;top:-8px;font:300 62px/1 var(--disp);color:var(--acc)}
 .rec h4{font:700 19px/1.42 var(--body);margin-bottom:10px;text-wrap:pretty}
 .rec p{font-size:16.5px;line-height:1.66;color:#27345A}
-.recs-side{display:grid;gap:22px;align-content:start;position:sticky;top:12vh}
-.recs-side figure{position:relative;overflow:hidden;border-radius:4px}
-.recs-side img{width:100%;height:auto}
 .pairs{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.4vw,32px)}
 .pair{display:block;text-decoration:none;border-top:3px solid var(--rule);padding:22px 4px 8px;transition:border-color .3s}
 .pair:hover{border-color:var(--acc)}
@@ -246,6 +247,26 @@ section:focus,header:focus,footer:focus{outline:none}
 .topics{list-style:none;margin-top:26px;padding-left:22px;border-left:3px solid transparent;border-image:linear-gradient(180deg,var(--ta,#2E9A3C),var(--tb,#F28A1C)) 1;display:grid;gap:7px;font-size:16px;line-height:1.4;color:#1B2749}
 [data-pair=cd]{--ta:#2E9A3C;--tb:#F28A1C}[data-pair=bd]{--ta:#5650B4;--tb:#F28A1C}[data-pair=bc]{--ta:#2E9A3C;--tb:#5650B4}
 
+/* intersections: the report's diagram, topics set around the live graphic */
+.inter-scene .stage{background:#fff;--u:min(.1394vh,.125vw);--cy:calc(50vh - 52*var(--u))}
+.ig{position:absolute;left:calc(50% + var(--gx)*var(--u));top:calc(var(--cy) + var(--gy)*var(--u));width:calc(316*var(--u));height:calc(316*var(--u));translate:-50% -50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(13*var(--u));text-decoration:none;color:var(--ink)}
+.ig-cd{--gx:-224;--gy:-118}.ig-bc{--gx:224;--gy:-118}.ig-bd{--gx:0;--gy:222}
+.ig-arc{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.ig-arc path{fill:none;stroke-width:1;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset 1.5s var(--ease) .1s}
+.ig.on .ig-arc path{stroke-dashoffset:0}
+.ig h3,.ig ul{position:relative;text-align:center;max-width:calc(246*var(--u))}
+.ig h3{font:700 clamp(13.5px,calc(15.5*var(--u)),19px)/1.22 var(--body);transition:color .25s}
+.ig h3 span{font-weight:400}
+.ig ul{list-style:none;font-size:clamp(12px,calc(13.2*var(--u)),16.5px);line-height:1.34;color:#27345A;display:grid;gap:.2em;text-wrap:balance}
+.ig-cd>:not(svg){translate:calc(-12*var(--u)) calc(-4*var(--u))}.ig-bc>:not(svg){translate:calc(12*var(--u)) calc(-4*var(--u))}.ig-bd>:not(svg){translate:0 calc(12*var(--u))}
+.ig:hover h3,.ig:focus-visible h3{color:var(--acc2)}
+.js .ig ul,.js .ig h3{opacity:0;transition:opacity .7s ease .45s,color .25s}
+.js .ig.on ul,.js .ig.on h3{opacity:1}
+.inter-static{display:none}
+.reduced .inter-static{display:block;position:absolute;left:50%;top:var(--cy);width:calc(520*var(--u));height:calc(520*var(--u));translate:-50% -50%}
+.reduced .inter-static svg{width:100%;height:100%;overflow:visible}.reduced .inter-static text{font-family:var(--disp)}
+.reduced .ig-arc path{stroke-dashoffset:0}.reduced .ig ul,.reduced .ig h3{opacity:1!important}
+
 /* white (spectrum) scenes */
 .white-scene .stage,.split-scene .stage{color:#fff;background:#fff}
 .mesh{position:absolute;inset:0;background:
@@ -274,13 +295,14 @@ section:focus,header:focus,footer:focus{outline:none}
 .enablers b{font-weight:600}
 
 /* closing + footer */
-.closing{position:relative;overflow:hidden;min-height:128vh;display:grid;place-items:center;padding:16vh var(--gut)}
-.closing-bg{position:absolute;inset:-14% 0}
-.closing-bg img{width:100%;height:100%;object-fit:cover;object-position:50% 60%}
-.closing-panel{position:relative;z-index:2;max-width:780px;background:rgba(255,255,255,.92);padding:clamp(24px,4vw,56px);border-radius:6px}
-.closing-panel p{font-size:clamp(17px,1.35vw,19.5px);line-height:1.7}
-.closing-panel p+p{margin-top:1.1em}
-.conclusion .whales{height:clamp(360px,86vh,820px);clip-path:polygon(0 0,100% 0,100% 78%,0 100%)}
+.closing{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);background:linear-gradient(160deg,#0B3558,#06223C);color:#fff}
+.closing-text{align-self:center;padding:clamp(72px,14vh,160px) clamp(28px,6vw,96px) clamp(120px,18vh,190px) max(var(--gut),(100vw - 1240px)/2)}
+.closing-text p{font-size:clamp(17px,1.4vw,20.5px);line-height:1.72;color:rgba(255,255,255,.93);max-width:34em}
+.closing-text p+p{margin-top:1.15em}
+.closing-text p:first-child{font-size:clamp(19px,1.62vw,23.5px);line-height:1.6;color:#fff}
+.closing-photo{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden}
+.closing-photo img{width:100%;height:100%;object-fit:cover;object-position:48% 100%}
+
 .foot{position:relative;background:var(--navy);color:#fff;min-height:100vh;min-height:100lvh;display:grid;grid-template-columns:1fr 1fr}
 .foot-photo{position:relative;overflow:hidden;min-height:60vh}
 .foot-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -412,8 +434,8 @@ section:focus,header:focus,footer:focus{outline:none}
 /* ---------- small screens ---------- */
 @media (max-width:899px){
   body{font-size:17px}
-  .row,.row.flip,.row.wide-side,.recs-grid,.offices{grid-template-columns:minmax(0,1fr)}
-  .side,.recs-side,.offices-copy,.row.flip>figure{position:static}
+  .row,.row.flip,.row.wide-side,.offices{grid-template-columns:minmax(0,1fr)}
+  .side,.offices-copy,.row.flip>figure,.row.wide-side>figure{position:static}
   .side{grid-template-columns:minmax(0,1fr)}
   .row.flip>figure{order:2}
   .cols2{columns:1}
@@ -421,8 +443,8 @@ section:focus,header:focus,footer:focus{outline:none}
   .pairs{grid-template-columns:1fr}
   .duo{grid-template-columns:1fr;height:auto}
   .duo figure{height:46vh}
-  .recs-side{grid-template-columns:1fr 1fr}
-  .rec{padding-left:54px}
+  .rec{padding-left:54px;grid-template-columns:minmax(0,1fr);gap:20px}
+  .rec-fig{margin-top:0;aspect-ratio:16/9}
   .rec::before{font-size:46px}
   .porthole{max-width:300px}
   .chart{--lab:118px;font-size:12.5px}
@@ -436,11 +458,22 @@ section:focus,header:focus,footer:focus{outline:none}
   .pillars-copy{left:var(--gut);right:var(--gut);width:auto;top:auto;bottom:4%;translate:none}
   .beats{min-height:230px;margin-top:14px}
   .pair-copy{left:var(--gut);right:var(--gut);top:auto;bottom:5%;translate:none}
+  .ig{left:var(--gut);right:var(--gut);top:50vh;width:auto;height:auto;translate:none;justify-content:flex-start;gap:12px}
+  .ig-arc{display:none}
+  .ig h3{max-width:none;font-size:18px;order:-1}
+  .ig ul{max-width:none;font-size:15.5px;gap:.3em}
+  .ig>*{translate:none!important}
+  .js .inter-scene .ig{opacity:0!important;pointer-events:none!important}
+  .js .inter-scene[data-step="1"] .ig-cd,.js .inter-scene[data-step="2"] .ig-bc,.js .inter-scene[data-step="3"] .ig-bd{opacity:1!important;pointer-events:auto!important}
+  .js .inter-scene[data-step="1"] .ig-cd *,.js .inter-scene[data-step="2"] .ig-bc *,.js .inter-scene[data-step="3"] .ig-bd *{opacity:1}
   .pair-copy .topics{font-size:14.5px;gap:4px;margin-top:14px}
   .pair-copy .lede{font-size:17px;margin-top:10px}
   .split-copy{top:auto;bottom:6%;translate:-50% 0;width:calc(100% - 2*var(--gut))}
   .portal-photo.poly .inset{right:50%;translate:50% -50%;top:34%;height:42vh}
   .foot{grid-template-columns:1fr}
+  .closing{grid-template-columns:1fr}
+  .closing-photo{position:relative;height:auto;aspect-ratio:1/1.05;order:-1}
+  .closing-text{padding:44px var(--gut) 96px}
   .credits{columns:1}
   .menu-list{grid-template-columns:1fr}
   #dock{left:8px;bottom:8px;width:66px;height:66px}
@@ -468,7 +501,6 @@ section:focus,header:focus,footer:focus{outline:none}
 .reduced .mesh.alt{opacity:1}
 .reduced .split-copy{color:#fff}
 @media print{#compass,#dock,.spine,.menu{display:none}}
-.porthole img.pos-top{object-position:70% 4%}
 
 #dockHint{position:fixed;left:108px;bottom:38px;z-index:54;background:var(--ink);color:#fff;font:600 13.5px/1.35 var(--body);padding:10px 14px;border-radius:8px;max-width:240px;opacity:0;transform:translateX(-8px);transition:opacity .5s,transform .6s var(--ease);pointer-events:none}
 #dockHint::before{content:"";position:absolute;left:-6px;bottom:14px;border:6px solid transparent;border-right-color:var(--ink);border-left:0}
@@ -861,18 +893,12 @@ section:focus,header:focus,footer:focus{outline:none}
       <img src="assets/med-climate.webp" width="560" height="560" alt="" loading="lazy">
       <h3>Climate action recommendations</h3>
     </div>
-    <div class="recs-grid">
-      <ol class="recs">
-        <li class="rec rv"><h4>To accelerate adoption of nature-based solutions, integrate coastal biodiversity protection with disaster mitigation initiatives and natural resource management to build resilient and sustainable infrastructure.</h4><p>Nature-based solutions such as mangrove restoration, wetland preservation and reforestation offer low-cost and sustainable long-term solutions to protect lives, livelihoods and infrastructure from the effects of natural disasters, while simultaneously enhancing coastal marine ecosystem resilience and biodiversity. Increasing access to climate finance can help to scale up coastal protection, climate-resilient agriculture and fisheries, and sustainable tourism. These priorities can be advanced by supporting SIDS in integrating nature-based solutions and disaster risk reduction into broader national planning and frameworks.</p></li>
-        <li class="rec rv"><h4>Optimize resource management by supporting the integration of circular economy priorities, such as for the water supply and waste management, into national frameworks, planning and strategies.</h4><p>Implementing a circular economy provides crucial opportunities for SIDS, especially for achieving sustainable climate action and inclusive blue economies by reducing reliance on imports, improving waste management and promoting social inclusivity. Governments must play a significant role in developing entrepreneurship and scaling up circular economy activities by providing finance and a supportive regulatory framework. They must also build enforcement mechanisms and address negative incentives impeding adoption of circular practices. Data science can play a key role in optimizing resource management and systems modelling of sustainable pathways.</p></li>
-        <li class="rec rv"><h4>Focus on renewable energy as an integrated approach to socioeconomic empowerment through its capacity to further self-dependence, climate resilience and economic diversification.</h4><p>Access to renewable energy in SIDS offers more than just energy. It represents a path to self-dependence, climate resilience, economic diversification and improved quality of life. Equitable access to clean, sustainable, and reliable energy is at the intersection of climate action, blue economy, and digital transformation. Supporting distributed energy systems, grid assessment studies, energy storage and long-term plans can all help SIDS to reach the full potential of solar, wind, geothermal and marine energy. International support will be essential, as over half of targeted renewable capacity in SIDS is conditional on international support through financing, technical assistance, and capacity-building.</p></li>
-        <li class="rec rv"><h4>Pursue innovation in the utilization of AI and GIS for climate goals, including a priority of investment in their application disaster response and infrastructure, optimize sustainable resource utilization and monitor conservation progress.</h4><p>Through GIS, SIDS can analyse and visualize their development potential in order to develop data-driven strategies for drafting policy, optimize resources effectively, and develop climate resilient infrastructure. It is vital to support MSDIs for ocean governance through data on bathymetry, geology, blue economy infrastructure, marine ecosystems, climate and oceanography. Community mapping and drone technologies can provide localized data on demographics, ecosystem services and improvements to socioeconomic models to inform policy and national strategies.</p></li>
-      </ol>
-      <div class="recs-side">
-        <figure class="rv rv-clip"><img src="assets/rubble.webp" width="1400" height="872" alt="A woman in a bright green dress sits among storm rubble beside palm trees" loading="lazy" decoding="async"><span class="credit">Photo: Silke von Brockhausen / UNDP</span></figure>
-        <figure class="rv rv-clip"><img src="assets/celebrate.webp" width="771" height="432" alt="People in leaf garlands and face paint celebrating" loading="lazy" decoding="async"><span class="credit">Photo: Elodie Van Lierde</span></figure>
-      </div>
-    </div>
+    <ol class="recs">
+      <li class="rec rv"><div class="rec-txt"><h4>To accelerate adoption of nature-based solutions, integrate coastal biodiversity protection with disaster mitigation initiatives and natural resource management to build resilient and sustainable infrastructure.</h4><p>Nature-based solutions such as mangrove restoration, wetland preservation and reforestation offer low-cost and sustainable long-term solutions to protect lives, livelihoods and infrastructure from the effects of natural disasters, while simultaneously enhancing coastal marine ecosystem resilience and biodiversity. Increasing access to climate finance can help to scale up coastal protection, climate-resilient agriculture and fisheries, and sustainable tourism. These priorities can be advanced by supporting SIDS in integrating nature-based solutions and disaster risk reduction into broader national planning and frameworks.</p></div><figure class="rec-fig"><img src="assets/rubble.webp" width="1400" height="872" alt="A woman in a bright green dress sits among storm rubble beside palm trees" loading="lazy" decoding="async"><span class="credit">Photo: Silke von Brockhausen / UNDP</span></figure></li>
+      <li class="rec rv"><div class="rec-txt"><h4>Optimize resource management by supporting the integration of circular economy priorities, such as for the water supply and waste management, into national frameworks, planning and strategies.</h4><p>Implementing a circular economy provides crucial opportunities for SIDS, especially for achieving sustainable climate action and inclusive blue economies by reducing reliance on imports, improving waste management and promoting social inclusivity. Governments must play a significant role in developing entrepreneurship and scaling up circular economy activities by providing finance and a supportive regulatory framework. They must also build enforcement mechanisms and address negative incentives impeding adoption of circular practices. Data science can play a key role in optimizing resource management and systems modelling of sustainable pathways.</p></div><figure class="rec-fig"><img src="assets/waste.webp" width="1099" height="634" alt="People sort through rubbish at a smoking dump beside a hillside" loading="lazy" decoding="async"></figure></li>
+      <li class="rec rv"><div class="rec-txt"><h4>Focus on renewable energy as an integrated approach to socioeconomic empowerment through its capacity to further self-dependence, climate resilience and economic diversification.</h4><p>Access to renewable energy in SIDS offers more than just energy. It represents a path to self-dependence, climate resilience, economic diversification and improved quality of life. Equitable access to clean, sustainable, and reliable energy is at the intersection of climate action, blue economy, and digital transformation. Supporting distributed energy systems, grid assessment studies, energy storage and long-term plans can all help SIDS to reach the full potential of solar, wind, geothermal and marine energy. International support will be essential, as over half of targeted renewable capacity in SIDS is conditional on international support through financing, technical assistance, and capacity-building.</p></div><figure class="rec-fig"><img src="assets/windsunset.webp" width="1080" height="720" alt="Offshore wind turbines against a sunset sky" loading="lazy" decoding="async"><span class="credit">Photo: Waldemar / Unsplash</span></figure></li>
+      <li class="rec rv"><div class="rec-txt"><h4>Pursue innovation in the utilization of AI and GIS for climate goals, including a priority of investment in their application disaster response and infrastructure, optimize sustainable resource utilization and monitor conservation progress.</h4><p>Through GIS, SIDS can analyse and visualize their development potential in order to develop data-driven strategies for drafting policy, optimize resources effectively, and develop climate resilient infrastructure. It is vital to support MSDIs for ocean governance through data on bathymetry, geology, blue economy infrastructure, marine ecosystems, climate and oceanography. Community mapping and drone technologies can provide localized data on demographics, ecosystem services and improvements to socioeconomic models to inform policy and national strategies.</p></div><figure class="rec-fig"><img src="assets/atolls.webp" width="1344" height="1146" alt="Satellite view of scattered ring-shaped atolls in dark water" loading="lazy" decoding="async"><span class="credit">Photo: European Space Agency</span></figure></li>
+    </ol>
   </div>
 </section>
 
@@ -906,7 +932,7 @@ section:focus,header:focus,footer:focus{outline:none}
     </aside>
   </div>
   <div class="wrap row flip">
-    <figure class="porthole tall rv rv-circle"><img src="assets/coral.webp" width="1200" height="1619" alt="Red fish hover over a coral outcrop" loading="lazy" decoding="async" class="pos-top"></figure>
+    <figure class="porthole rv rv-circle"><img src="assets/coralc.webp" width="840" height="840" alt="Red fish hover over a coral outcrop" loading="lazy" decoding="async"></figure>
     <div class="prose">
       <p class="rv">UNDP supports SIDS in developing blue economies through an integrated approach rooted in sustainable finance and development. The SIDS Offer aims to assist 20 to 30 countries in implementing national blue economy strategies and launching blue economy pilots, while mobilizing $30 million or more in new and additional blue economy grant finance. Significant technical, financial and capacity-building assistance support this process.</p>
 <p class="rv">Through the SIDS Offer, UNDP assists in developing blue economy strategies that promote economic diversification, job creation and resilience. Support ranges from blue economy scoping studies, such as in Montserrat, to the development of detailed strategies, including in Guinea-Bissau. In 2022, Belize launched the Blue Economy Development Policy and Strategy and the Maritime Economy Plan to define the development pathways of a blue economy. Timor-Leste is finalizing a blue economy financing strategy. To raise awareness on the blue economy in Asia and the Pacific, UNDP published an action brief to guide transition.</p>
@@ -933,25 +959,19 @@ section:focus,header:focus,footer:focus{outline:none}
       <img src="assets/med-blue.webp" width="560" height="560" alt="" loading="lazy">
       <h3>Blue economy recommendations</h3>
     </div>
-    <div class="recs-grid">
-      <ol class="recs">
-        <li class="rec rv"><h4>Ensure that ocean health, blue economy policies and blue economy strategies are fully integrated into development plans and budgets and data driven, with a focus on ocean equity.</h4><p>There is a need to scale up national awareness-raising on the blue economy potential for SIDS, especially in light of upcoming challenges, opportunities and multilateral environmental agreements. Support for natural capital accounting systems and the valuation of ecosystem services (including for climate change adaptation) could help in integrating marine health into development and fiscal policies and key development sectors. This can be supported by marine ecosystem valuation and ocean accounting which enables countries to go beyond GDP to measure the contribution of the ocean towards the SDGs. Engagement, frameworks, and policies at the regional level would support collective action and drive national processes.</p></li>
-        <li class="rec rv"><h4>Focus on improving the sustainability and inclusivity of existing sectors through on-the-ground projects while supporting the emergence of new blue economy sectors and innovation through research and capacity-building.</h4><p>Support for projects that assess blue economy potential, prospects and pathways for each country should reflect their specific circumstances to encourage a diversification of blue economy opportunities, especially through the integration of digital, including in aquaculture, ocean-based energy, sustainable maritime transport, desalination, research and education and marine genetic resources. Pilot initiatives can support the reconfiguration of existing sectors such as tourism and fisheries through digital innovations, and contribute to blue carbon projects that bridge funding gaps in ocean protection while aiming to help expand the human capital and skills required for the blue economy transformation.</p></li>
-        <li class="rec rv"><h4>Support national financing plans tailored to national and regional circumstances and designed to stimulate investment in blue economy portfolios, including by accelerating bankable projects.</h4><p>This will involve acceleration of the identification and dissemination of bankable projects and successful innovative financing models, including to leverage private capital, as well as the diversification of blue economy financing sources, towards bilateral avenues, philanthropies, etc. To improve access to finance and address limited capacity, it is important to streamline related processes and frameworks. Support for the new Multidimensional Vulnerability Index (MVI) could also enhance access to concessional financing.</p></li>
-        <li class="rec rv"><h4>Diversify blue economy opportunities especially through digital to reinvent existing sectors, including aquaculture, education and training, ocean energy, maritime transport and marine genetic resources.</h4><p>The digital transformation of ocean industries involves leveraging technologies such as Internet of Things, AI and big data, and automation tools. For example, innovative monitoring systems can help optimize offshore energy production, while digital platforms can connect seafood producers with consumers, promoting sustainable sourcing and enhancing market access. Digital technologies enable the collection, analysis, and visualization of vast amounts of data from various sources such as sensors, satellites, and monitoring systems, providing valuable insights into ocean health, climate patterns, species distribution, and resource availability.</p></li>
-      </ol>
-      <div class="recs-side">
-        <figure class="rv rv-clip"><img src="assets/solar.webp" width="614" height="795" alt="Floating solar panels on a lake beside green wetland" loading="lazy" decoding="async"><span class="credit">Photo: Imaginechina Limited / Alamy</span></figure>
-        <figure class="rv rv-clip"><img src="assets/tuna.webp" width="1800" height="1203" alt="A tuna rendered as a digital wireframe over data charts" loading="lazy" decoding="async"><span class="credit">Photo: Ngad / Bigstock</span></figure>
-      </div>
-    </div>
+    <ol class="recs">
+      <li class="rec rv"><div class="rec-txt"><h4>Ensure that ocean health, blue economy policies and blue economy strategies are fully integrated into development plans and budgets and data driven, with a focus on ocean equity.</h4><p>There is a need to scale up national awareness-raising on the blue economy potential for SIDS, especially in light of upcoming challenges, opportunities and multilateral environmental agreements. Support for natural capital accounting systems and the valuation of ecosystem services (including for climate change adaptation) could help in integrating marine health into development and fiscal policies and key development sectors. This can be supported by marine ecosystem valuation and ocean accounting which enables countries to go beyond GDP to measure the contribution of the ocean towards the SDGs. Engagement, frameworks, and policies at the regional level would support collective action and drive national processes.</p></div><figure class="rec-fig"><img src="assets/reefc.webp" width="1080" height="720" alt="Red fish swim around a coral head in clear blue water" loading="lazy" decoding="async"></figure></li>
+      <li class="rec rv"><div class="rec-txt"><h4>Focus on improving the sustainability and inclusivity of existing sectors through on-the-ground projects while supporting the emergence of new blue economy sectors and innovation through research and capacity-building.</h4><p>Support for projects that assess blue economy potential, prospects and pathways for each country should reflect their specific circumstances to encourage a diversification of blue economy opportunities, especially through the integration of digital, including in aquaculture, ocean-based energy, sustainable maritime transport, desalination, research and education and marine genetic resources. Pilot initiatives can support the reconfiguration of existing sectors such as tourism and fisheries through digital innovations, and contribute to blue carbon projects that bridge funding gaps in ocean protection while aiming to help expand the human capital and skills required for the blue economy transformation.</p></div><figure class="rec-fig"><img src="assets/solar.webp" width="614" height="795" alt="Floating solar panels on a lake beside green wetland" loading="lazy" decoding="async"><span class="credit">Photo: Imaginechina Limited / Alamy</span></figure></li>
+      <li class="rec rv"><div class="rec-txt"><h4>Support national financing plans tailored to national and regional circumstances and designed to stimulate investment in blue economy portfolios, including by accelerating bankable projects.</h4><p>This will involve acceleration of the identification and dissemination of bankable projects and successful innovative financing models, including to leverage private capital, as well as the diversification of blue economy financing sources, towards bilateral avenues, philanthropies, etc. To improve access to finance and address limited capacity, it is important to streamline related processes and frameworks. Support for the new Multidimensional Vulnerability Index (MVI) could also enhance access to concessional financing.</p></div><figure class="rec-fig"><img src="assets/ship.webp" width="650" height="520" alt="A container ship seen from above" loading="lazy" decoding="async"><span class="credit">Photo: Shutterstock</span></figure></li>
+      <li class="rec rv"><div class="rec-txt"><h4>Diversify blue economy opportunities especially through digital to reinvent existing sectors, including aquaculture, education and training, ocean energy, maritime transport and marine genetic resources.</h4><p>The digital transformation of ocean industries involves leveraging technologies such as Internet of Things, AI and big data, and automation tools. For example, innovative monitoring systems can help optimize offshore energy production, while digital platforms can connect seafood producers with consumers, promoting sustainable sourcing and enhancing market access. Digital technologies enable the collection, analysis, and visualization of vast amounts of data from various sources such as sensors, satellites, and monitoring systems, providing valuable insights into ocean health, climate patterns, species distribution, and resource availability.</p></div><figure class="rec-fig"><img src="assets/tuna.webp" width="1800" height="1203" alt="A tuna rendered as a digital wireframe over data charts" loading="lazy" decoding="async"><span class="credit">Photo: Ngad / Bigstock</span></figure></li>
+    </ol>
   </div>
 </section>
 
 <!-- ================================================================ DIGITAL -->
 <section class="scene portal t-digital" id="digital" data-scene="portal" data-pillar="2" data-mode="digital" data-name="Digital transformation" style="--h:330vh">
   <div class="stage">
-    <div class="portal-photo poly"><img src="assets/poly.webp" width="2880" height="1633" alt="Abstract orange faceted texture" loading="lazy" decoding="async"><img class="inset" src="assets/seedling.webp" width="503" height="651" alt="Cupped hands holding a seedling inside a glowing network sphere" loading="lazy"></div>
+    <div class="portal-photo poly"><img src="assets/poly.webp" width="3200" height="1826" alt="Abstract orange faceted texture" loading="lazy" decoding="async"><img class="inset" src="assets/seedling.webp" width="503" height="651" alt="Cupped hands holding a seedling inside a glowing network sphere" loading="lazy"></div>
     <div class="portal-shade"></div>
     <img class="portal-ring" src="assets/med-digital-ring.webp" alt="" width="560" height="560">
     <img class="portal-icon" src="assets/med-digital.webp" alt="" width="560" height="560">
@@ -1024,18 +1044,12 @@ section:focus,header:focus,footer:focus{outline:none}
       <img src="assets/med-digital.webp" width="560" height="560" alt="" loading="lazy">
       <h3>Digital transformation recommendations</h3>
     </div>
-    <div class="recs-grid">
-      <ol class="recs">
-        <li class="rec rv"><h4>Support the development of National Digital Strategies to provide strong direction and coherence for digital priorities and programmes of the government, private sector, civil society, and other sectors.</h4><p>SIDS face challenges due to significant data gaps, and in the discovery, access, analysis and interpretation of data. This requires support for accessing comprehensive and updated qualitative and quantitative data, and developing digital tools factoring in their specific geographic and socioeconomic considerations. Specific priorities are to ensure equity as AI and automation in the workforce expand, and to support governments and private sector firms in pursuing opportunities to enhance ocean monitoring, climate responses and digital systems through the scalability and efficiency of AI, and data infrastructure built on the traditional knowledge of oceans alongside modern monitoring tools.</p></li>
-        <li class="rec rv"><h4>Shape a whole-of-society effort around digital, engaging all sectors and communities - and ensure that no one is excluded, or left behind.</h4><p>Governments and agencies should develop policies and regulations that explicitly address the protection of disadvantaged groups in digital ecosystems. These frameworks should address data privacy, security, and access rights, ensuring that the interests and rights of women, youth, and indigenous populations are safeguarded. Support for public-private sector collaboration should help develop strategies to guarantee equitable access to the benefits of digital while limiting risks such as to personal data and privacy. The starting point for developing such mechanisms is to support data protection impact assessments.</p></li>
-        <li class="rec rv"><h4>Position government as a catalyst for digital transformation in SIDS - recognising that, although a multi-sector and whole-of-society efforts, SIDS governments are central actors and leaders in digital.</h4><p>Data is a key resource for evidence-based governance and paths to effective policymaking that accelerate resilience and adaptation. National statistics offices, ministries and other government bodies frequently lack the technical capacity to fully embrace the potential of data. They require support for strengthening their financial, technical and human resources in order to meet national data system requirements and establish ministry-specific capacity-building action plans. Advancing the digital readiness assessment to identify, structure and prioritize national digital transformation efforts and agendas, including data governance, can help to promote knowledge-sharing and research-based sustainable development.</p></li>
-        <li class="rec rv"><h4>Shape, build, and embed a robust and future-proof regulatory framework to ensure that digital leads to positive outcomes across economies and societies.</h4><p>Building climate resilience and enhancing blue economies requires economic diversification. Digital capacity-building can support SIDS in accelerating industries such as e-commerce, digital payments and online education platforms. To strengthen local innovation economies, policies can stimulate competition and provide small and medium-sized enterprises with fair and open access to digital platforms. Microfinance programmes, venture capital funds and impact investment vehicles all improve access to a wider range of funding options to take advantage of their digital transformation.</p></li>
-      </ol>
-      <div class="recs-side">
-        <figure class="rv rv-clip"><img src="assets/datachart.webp" width="929" height="306" alt="Glowing blue data charts" loading="lazy" decoding="async"></figure>
-        <figure class="rv rv-clip"><img src="assets/pylon.webp" width="1800" height="1328" alt="Electricity pylons silhouetted against a violet dusk sky" loading="lazy" decoding="async"></figure>
-      </div>
-    </div>
+    <ol class="recs">
+      <li class="rec rv"><div class="rec-txt"><h4>Support the development of National Digital Strategies to provide strong direction and coherence for digital priorities and programmes of the government, private sector, civil society, and other sectors.</h4><p>SIDS face challenges due to significant data gaps, and in the discovery, access, analysis and interpretation of data. This requires support for accessing comprehensive and updated qualitative and quantitative data, and developing digital tools factoring in their specific geographic and socioeconomic considerations. Specific priorities are to ensure equity as AI and automation in the workforce expand, and to support governments and private sector firms in pursuing opportunities to enhance ocean monitoring, climate responses and digital systems through the scalability and efficiency of AI, and data infrastructure built on the traditional knowledge of oceans alongside modern monitoring tools.</p></div><figure class="rec-fig"><img src="assets/datachart.webp" width="929" height="306" alt="Glowing blue data charts" loading="lazy" decoding="async"></figure></li>
+      <li class="rec rv"><div class="rec-txt"><h4>Shape a whole-of-society effort around digital, engaging all sectors and communities - and ensure that no one is excluded, or left behind.</h4><p>Governments and agencies should develop policies and regulations that explicitly address the protection of disadvantaged groups in digital ecosystems. These frameworks should address data privacy, security, and access rights, ensuring that the interests and rights of women, youth, and indigenous populations are safeguarded. Support for public-private sector collaboration should help develop strategies to guarantee equitable access to the benefits of digital while limiting risks such as to personal data and privacy. The starting point for developing such mechanisms is to support data protection impact assessments.</p></div><figure class="rec-fig"><img src="assets/celebrate.webp" width="771" height="432" alt="People in leaf garlands and face paint celebrating" loading="lazy" decoding="async"><span class="credit">Photo: Elodie Van Lierde</span></figure></li>
+      <li class="rec rv"><div class="rec-txt"><h4>Position government as a catalyst for digital transformation in SIDS - recognising that, although a multi-sector and whole-of-society efforts, SIDS governments are central actors and leaders in digital.</h4><p>Data is a key resource for evidence-based governance and paths to effective policymaking that accelerate resilience and adaptation. National statistics offices, ministries and other government bodies frequently lack the technical capacity to fully embrace the potential of data. They require support for strengthening their financial, technical and human resources in order to meet national data system requirements and establish ministry-specific capacity-building action plans. Advancing the digital readiness assessment to identify, structure and prioritize national digital transformation efforts and agendas, including data governance, can help to promote knowledge-sharing and research-based sustainable development.</p></div><figure class="rec-fig"><img src="assets/male.webp" width="1028" height="1319" alt="Aerial view of Malé, the densely built island capital of the Maldives" loading="lazy" decoding="async"><span class="credit">Photo: Niromaks / Adobe Stock</span></figure></li>
+      <li class="rec rv"><div class="rec-txt"><h4>Shape, build, and embed a robust and future-proof regulatory framework to ensure that digital leads to positive outcomes across economies and societies.</h4><p>Building climate resilience and enhancing blue economies requires economic diversification. Digital capacity-building can support SIDS in accelerating industries such as e-commerce, digital payments and online education platforms. To strengthen local innovation economies, policies can stimulate competition and provide small and medium-sized enterprises with fair and open access to digital platforms. Microfinance programmes, venture capital funds and impact investment vehicles all improve access to a wider range of funding options to take advantage of their digital transformation.</p></div><figure class="rec-fig"><img src="assets/pylon.webp" width="1800" height="1328" alt="Electricity pylons silhouetted against a violet dusk sky" loading="lazy" decoding="async"></figure></li>
+    </ol>
   </div>
 </section>
 
@@ -1053,23 +1067,27 @@ section:focus,header:focus,footer:focus{outline:none}
   <div class="wrap">
     <h3 class="title sm rv"><span class="ln"><span>Integrated pillars</span></span><span class="ln"><span><b>of development</b></span></span></h3>
     <p class="lede rv">By demonstrating priorities and progress crosscutting across each pair of pillars, this analysis explores the key ways that innovation and new development approaches emerge from the intersections of digital, blue economies, and climate action.</p>
-    <div class="pairs">
-      <a class="pair rv" href="#climate-digital">
-        <span class="pair-dots"><i class="dot c0"></i><i class="dot c2"></i></span>
-        <b>Climate action &amp; digital transformation</b>
-        <span>Digital nations, Renewable energy transition, Digital agriculture &amp; food systems, Disaster early warning systems, Spatial data for resource management, Data-driven NDCs</span>
-      </a>
-      <a class="pair rv" href="#blue-digital">
-        <span class="pair-dots"><i class="dot c1"></i><i class="dot c2"></i></span>
-        <b>Blue economy &amp; digital transformation</b>
-        <span>Fisheries monitoring, Fishery supply chain, Marine spatial data infrastructure, Digital tourism, Marine transport</span>
-      </a>
-      <a class="pair rv" href="#blue-climate">
-        <span class="pair-dots"><i class="dot c1"></i><i class="dot c0"></i></span>
-        <b>Blue economy &amp; climate action</b>
-        <span>Combating ocean debris &amp; pollution, Integrated coastal zone protection, management &amp; restoration, Enabling innovative ocean renewables</span>
-      </a>
-    </div>
+  </div>
+</section>
+
+<section class="scene inter-scene t-int" id="intersections" data-scene="inter" data-mode="all" data-name="An integrated approach" style="--h:300vh">
+  <div class="stage">
+    <div id="interCompass" class="inter-static" aria-hidden="true"></div>
+    <a class="ig ig-cd" href="#climate-digital" data-on="0.12,0.93" data-k="1">
+      <svg class="ig-arc" viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="igA" x1=".45" y1="1" x2=".95" y2=".25"><stop offset="0" stop-color="#F28A1C"/><stop offset="1" stop-color="#2E9A3C"/></linearGradient></defs><path d="M94.9 197.9A98 98 0 1 1 191.5 64.9" pathLength="100" stroke="url(#igA)"/></svg>
+      <h3>Climate action <span>&amp;</span><br>digital transformation</h3>
+      <ul><li>Digital nations</li><li>Renewable energy transition</li><li>Digital agriculture &amp; food systems</li><li>Disaster early warning systems</li><li>Spatial data for resource management</li><li>Data-driven NDCs, monitoring &amp; evaluation</li><li>Empowering local youth talent</li></ul>
+    </a>
+    <a class="ig ig-bc" href="#blue-climate" data-on="0.34,0.93" data-k="2">
+      <svg class="ig-arc" viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="igB" x1=".05" y1=".25" x2=".55" y2="1"><stop offset="0" stop-color="#2E9A3C"/><stop offset="1" stop-color="#5B4FB5"/></linearGradient></defs><path d="M8.5 64.9A98 98 0 1 1 105.1 197.9" pathLength="100" stroke="url(#igB)"/></svg>
+      <h3>Climate action <span>&amp;</span><br>blue economy</h3>
+      <ul><li>Combating ocean debris &amp; pollution</li><li>Integrated coastal zone protection, management &amp; restoration</li><li>Enabling innovative ocean renewables</li></ul>
+    </a>
+    <a class="ig ig-bd" href="#blue-digital" data-on="0.56,0.93" data-k="3">
+      <svg class="ig-arc" viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="igC" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#5B4FB5"/><stop offset="1" stop-color="#F28A1C"/></linearGradient></defs><path d="M182.2 46.6A98 98 0 1 1 17.8 46.6" pathLength="100" stroke="url(#igC)"/></svg>
+      <ul><li>Fisheries monitoring</li><li>Fishery supply chain</li><li>Marine spatial data infrastructure</li><li>Digital tourism</li><li>Marine transport</li></ul>
+      <h3>Blue economy <span>&amp;</span><br>digital transformation</h3>
+    </a>
   </div>
 </section>
 
@@ -1430,10 +1448,9 @@ section:focus,header:focus,footer:focus{outline:none}
 <p class="rv">While innovations in cloud technologies, machine learning and analytic techniques offer enormous potential, they must be matched by local technical capacity-building as well as a larger analysis of the threats and challenges that accompany any AI endeavour.</p>
     </div>
   </div>
-  <figure class="bleed strip">
-    <div class="par" data-par="0.1"><img src="assets/circuit.webp" width="1190" height="563" alt="A small forested island under a sky overlaid with circuit-board lines" loading="lazy" decoding="async"></div>
-    <span class="credit">Photo: Asian Development Bank</span>
-  </figure>
+  <div class="wrap">
+    <figure class="frame whole rv rv-clip"><img src="assets/circuit.webp" width="1190" height="563" alt="Two people and a dog cross a tidal flat in front of a small forested island, under a sky overlaid with circuit-board lines" loading="lazy" decoding="async"><span class="credit">Photo: Asian Development Bank</span></figure>
+  </div>
   <div class="wrap">
     <h3 class="h-sub rv" id="data-platform">The UNDP SIDS Data Platform</h3>
     <div class="prose cols2">
@@ -1497,12 +1514,11 @@ section:focus,header:focus,footer:focus{outline:none}
 </section>
 
 <section class="closing" data-mode="all" data-name="Looking forward">
-  <div class="closing-bg par" data-par="0.16"><img src="assets/swim.webp" width="1600" height="2068" alt="A smiling boy swims underwater, pointing at the camera" loading="lazy" decoding="async"></div>
-  <div class="closing-panel rv">
+  <div class="closing-text">
     <p class="rv">Rising Up for SIDS is UNDP’s response to a time of uncertainty and complexity—but also hope. Aligned with the objectives of the SAMOA Pathway and the 2030 Agenda, it continues to offer agile, efficient support through integrated solutions targeting systemic challenges. UNDP serves as an innovator, advocate, partner and integrator, but always with SIDS at the helm of their own development solutions.</p>
 <p class="rv">The ‘triple C’ of crises in the past few years—climate, conflict and COVID-19—have given a glimpse of the future if we do not act today. They showed how intricately interconnected people and planet are, a message that SIDS have advocated for many years. The global challenge is to embrace development that achieves human well-being while accounting for the climate emergency and avoiding the further depletion of natural capital. The upcoming decade offers a chance to focus on innovative, interconnected actions for SIDS to realize ever more inclusive and equitable development.</p>
   </div>
-  <span class="credit">Photo: Fabrice Dudenhofer / Ocean Image Bank</span>
+  <figure class="closing-photo rv rv-clip"><img src="assets/swim.webp" width="1600" height="2068" alt="A smiling boy swims underwater, pointing at the camera" loading="lazy" decoding="async"><span class="credit">Photo: Fabrice Dudenhofer / Ocean Image Bank</span></figure>
 </section>
 </main>
 
@@ -1522,7 +1538,7 @@ section:focus,header:focus,footer:focus{outline:none}
       </div>
       <div>
         <h3>Photo credits</h3>
-        <ul class="credits" id="credits"><li><span>Boat on open ocean</span> Jules Bassoleil / Unsplash</li><li><span>Malé, Maldives</span> Niromaks / Adobe Stock</li><li><span>Island</span> Jcob Nasyr / Unsplash</li><li><span>Harbour</span> Shutterstock</li><li><span>Wind turbines</span> Waldemar / Unsplash</li><li><span>Atoll from space</span> European Space Agency</li><li><span>Mangrove planting</span> Yuichi Ishida / UNDP Timor-Leste</li><li><span>After the storm</span> Silke von Brockhausen / UNDP</li><li><span>Celebration</span> Elodie Van Lierde</li><li><span>Sea turtle</span> Scott Stefan / Unsplash</li><li><span>Coral reef</span> Francesco Ungaro / Pexels</li><li><span>Fish farms</span> Andrey Armyagov</li><li><span>Floating solar</span> Imaginechina Limited / Alamy</li><li><span>Digital tuna</span> Ngad / Bigstock</li><li><span>Atoll</span> Mario Tama / Getty Images</li><li><span>Atolls from space</span> European Space Agency</li><li><span>Forest and beach</span> Erik Lukas</li><li><span>Vertical farm</span> Michael Rivera</li><li><span>Tuna catch</span> Fransisco Blaha</li><li><span>Coast from space</span> NASA</li><li><span>Container ship</span> Shutterstock</li><li><span>Virtual reef</span> Shutterstock</li><li><span>Canoe and buoys</span> Fransisco Blaha</li><li><span>Mangrove channels</span> Remus Shepherd</li><li><span>Island wind and solar</span> Byvalet / Shutterstock</li><li><span>Island and circuits</span> Asian Development Bank</li><li><span>Turbines at dusk</span> Waldemar / Unsplash</li><li><span>Whales</span> Lewis Burnett / Ocean Image Bank</li><li><span>Swimmer</span> Fabrice Dudenhofer / Ocean Image Bank</li><li><span>Beach</span> Saud Edum / Unsplash</li></ul>
+        <ul class="credits" id="credits"><li><span>Boat on open ocean</span> Jules Bassoleil / Unsplash</li><li><span>Malé, Maldives</span> Niromaks / Adobe Stock</li><li><span>Island</span> Jcob Nasyr / Unsplash</li><li><span>Harbour</span> Shutterstock</li><li><span>Wind turbines</span> Waldemar / Unsplash</li><li><span>Atoll from space</span> European Space Agency</li><li><span>Mangrove planting</span> Yuichi Ishida / UNDP Timor-Leste</li><li><span>After the storm</span> Silke von Brockhausen / UNDP</li><li><span>Turbines at dusk</span> Waldemar / Unsplash</li><li><span>Atolls from space</span> European Space Agency</li><li><span>Sea turtle</span> Scott Stefan / Unsplash</li><li><span>Coral reef</span> Francesco Ungaro / Pexels</li><li><span>Fish farms</span> Andrey Armyagov</li><li><span>Floating solar</span> Imaginechina Limited / Alamy</li><li><span>Container ship</span> Shutterstock</li><li><span>Digital tuna</span> Ngad / Bigstock</li><li><span>Celebration</span> Elodie Van Lierde</li><li><span>Atoll</span> Mario Tama / Getty Images</li><li><span>Forest and beach</span> Erik Lukas</li><li><span>Vertical farm</span> Michael Rivera</li><li><span>Tuna catch</span> Fransisco Blaha</li><li><span>Coast from space</span> NASA</li><li><span>Virtual reef</span> Shutterstock</li><li><span>Canoe and buoys</span> Fransisco Blaha</li><li><span>Mangrove channels</span> Remus Shepherd</li><li><span>Island wind and solar</span> Byvalet / Shutterstock</li><li><span>Island and circuits</span> Asian Development Bank</li><li><span>Whales</span> Lewis Burnett / Ocean Image Bank</li><li><span>Swimmer</span> Fabrice Dudenhofer / Ocean Image Bank</li><li><span>Beach</span> Saud Edum / Unsplash</li></ul>
       </div>
     </div>
     <button class="totop" type="button" id="toTop">Back to the start</button>
@@ -1677,7 +1693,31 @@ function ringURL() {
   } catch (e) { RING_URL = null; }
   return RING_URL;
 }
-function compassSVG(p) {
+// the enablers opener: the report's faceted spectrum sphere, its rim matching the ring
+const WIRE = 'M12.6 1.0L-17.0 11.6M12.6 1.0L0.9 -31.4M12.6 1.0L20.3 30.9M12.6 1.0L36.4 -20.8M12.6 1.0L42.6 15.7M-17.0 11.6L0.9 -31.4M-17.0 11.6L20.3 30.9M-17.0 11.6L-38.4 -8.7M-17.0 11.6L-11.2 39.7M-17.0 11.6L-55.7 15.7M-17.0 11.6L-37.0 52.8M0.9 -31.4L-38.4 -8.7M0.9 -31.4L36.4 -20.8M0.9 -31.4L-22.0 -39.8M0.9 -31.4L17.1 -51.1M0.9 -31.4L-13.8 -67.1M20.3 30.9L-11.2 39.7M20.3 30.9L42.6 15.7M20.3 30.9L12.9 56.2M20.3 30.9L48.4 40.8M-38.4 -8.7L-22.0 -39.8M-38.4 -8.7L-55.7 15.7M-38.4 -8.7L-51.4 -30.8M-38.4 -8.7L-65.7 0.0M36.4 -20.8L42.6 15.7M36.4 -20.8L17.1 -51.1M36.4 -20.8L51.9 -15.2M36.4 -20.8L50.3 -47.0M-11.2 39.7L12.9 56.2M-11.2 39.7L-37.0 52.8M-11.2 39.7L-5.4 72.2M-22.0 -39.8L-51.4 -30.8M-22.0 -39.8L-13.8 -67.1M-22.0 -39.8L-47.1 -56.7M42.6 15.7L51.9 -15.2M42.6 15.7L48.4 40.8M42.6 15.7L70.6 10.3M-55.7 15.7L-37.0 52.8M-55.7 15.7L-65.7 0.0M-55.7 15.7L-58.4 38.5M-55.7 15.7L-82.4 20.3M17.1 -51.1L-13.8 -67.1M17.1 -51.1L50.3 -47.0M17.1 -51.1L20.2 -75.9M17.1 -51.1L47.4 -77.2M12.9 56.2L48.4 40.8M12.9 56.2L-5.4 72.2M12.9 56.2L37.3 75.9M12.9 56.2L12.8 85.8M-51.4 -30.8L-65.7 0.0M-51.4 -30.8L-47.1 -56.7M-51.4 -30.8L-74.2 -28.7M-51.4 -30.8L-66.9 -50.3M51.9 -15.2L50.3 -47.0M51.9 -15.2L70.6 10.3M51.9 -15.2L74.5 -32.3M51.9 -15.2L84.5 -10.2M-37.0 52.8L-5.4 72.2M-37.0 52.8L-58.4 38.5M-37.0 52.8L-32.7 78.9M-37.0 52.8L-59.0 59.3M-13.8 -67.1L-47.1 -56.7M-13.8 -67.1L20.2 -75.9M-13.8 -67.1L-28.7 -76.7M-13.8 -67.1L-1.2 -91.3M48.4 40.8L70.6 10.3M48.4 40.8L37.3 75.9M48.4 40.8L80.3 37.2M48.4 40.8L78.2 62.4M48.4 40.8L55.7 83.1M-65.7 0.0L-74.2 -28.7M-65.7 0.0L-82.4 20.3M-65.7 0.0L-99.9 -4.8M50.3 -47.0L74.5 -32.3M50.3 -47.0L47.4 -77.2M50.3 -47.0L73.2 -50.9M50.3 -47.0L60.2 -79.8M50.3 -47.0L76.5 -64.4M-5.4 72.2L-32.7 78.9M-5.4 72.2L12.8 85.8M-5.4 72.2L-18.3 91.1M-47.1 -56.7L-28.7 -76.7M-47.1 -56.7L-66.9 -50.3M-47.1 -56.7L-76.4 -64.5M-47.1 -56.7L-52.8 -84.9M70.6 10.3L80.3 37.2M70.6 10.3L84.5 -10.2M70.6 10.3L99.9 -3.9M70.6 10.3L97.3 23.1M-58.4 38.5L-82.4 20.3M-58.4 38.5L-59.0 59.3M-58.4 38.5L-86.9 49.5M20.2 -75.9L47.4 -77.2M20.2 -75.9L-1.2 -91.3M20.2 -75.9L12.2 -99.3M20.2 -75.9L35.7 -93.4M37.3 75.9L12.8 85.8M37.3 75.9L55.7 83.1M37.3 75.9L32.5 94.6M-74.2 -28.7L-66.9 -50.3M-74.2 -28.7L-99.9 -4.8M-74.2 -28.7L-96.9 -24.7M-74.2 -28.7L-89.3 -45.0M74.5 -32.3L84.5 -10.2M74.5 -32.3L73.2 -50.9M74.5 -32.3L88.9 -45.7M74.5 -32.3L96.9 -24.7M-32.7 78.9L-59.0 59.3M-32.7 78.9L-18.3 91.1M-32.7 78.9L-32.7 94.5M-32.7 78.9L-54.1 84.1M-28.7 -76.7L-1.2 -91.3M-28.7 -76.7L-52.8 -84.9M-28.7 -76.7L-36.0 -93.3M-28.7 -76.7L-7.0 -99.8M80.3 37.2L97.3 23.1M80.3 37.2L86.9 49.4M80.3 37.2L78.2 62.4M-82.4 20.3L-86.9 49.5M-82.4 20.3L-96.7 25.5M-82.4 20.3L-99.9 -4.8M47.4 -77.2L35.7 -93.4M47.4 -77.2L60.2 -79.8M12.8 85.8L-18.3 91.1M12.8 85.8L32.5 94.6M12.8 85.8L11.9 99.3M12.8 85.8L-14.4 99.0M-66.9 -50.3L-89.3 -45.0M-66.9 -50.3L-76.4 -64.5M84.5 -10.2L99.9 -3.9M84.5 -10.2L96.9 -24.7M-59.0 59.3L-54.1 84.1M-59.0 59.3L-73.9 67.4M-59.0 59.3L-86.9 49.5M-1.2 -91.3L-7.0 -99.8M-1.2 -91.3L12.2 -99.3M73.2 -50.9L76.5 -64.4M73.2 -50.9L88.9 -45.7M-18.3 91.1L-14.4 99.0M-18.3 91.1L-32.7 94.5';
+let SPH_URL;
+function sphereURL() {
+  if (SPH_URL !== undefined) return SPH_URL;
+  try {
+    const N = 640, c = N / 2, cv = document.createElement('canvas'); cv.width = cv.height = N;
+    const x = cv.getContext('2d'), g = x.createConicGradient(-Math.PI / 2, c, c);
+    STOPS.forEach(([a, col]) => g.addColorStop(a / 360, col));
+    x.beginPath(); x.arc(c, c, c, 0, Math.PI * 2); x.clip();
+    x.fillStyle = g; x.fillRect(0, 0, N, N);
+    const m = x.createRadialGradient(c * 1.06, c * 1.16, 0, c * 1.06, c * 1.16, c * .78);
+    m.addColorStop(0, 'rgba(142,58,150,.95)'); m.addColorStop(.45, 'rgba(120,70,160,.5)'); m.addColorStop(1, 'rgba(120,70,160,0)');
+    x.fillStyle = m; x.fillRect(0, 0, N, N);
+    const h = x.createRadialGradient(c * .68, c * .6, 0, c * .68, c * .6, c * .9);
+    h.addColorStop(0, 'rgba(255,255,255,.34)'); h.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = h; x.fillRect(0, 0, N, N);
+    const e = x.createRadialGradient(c, c, c * .72, c, c, c);
+    e.addColorStop(0, 'rgba(8,20,60,0)'); e.addColorStop(1, 'rgba(8,20,60,.26)');
+    x.fillStyle = e; x.fillRect(0, 0, N, N);
+    SPH_URL = cv.toDataURL('image/png');
+  } catch (e) { SPH_URL = null; }
+  return SPH_URL;
+}
+function compassSVG(p, sphere) {
   const SEG = 3, url = ringURL();
   let arcs = '', clips = '';
   for (let k = 0; k < 3; k++) {
@@ -1699,6 +1739,8 @@ function compassSVG(p) {
     clips + [0, 1, 2].map(i => `<clipPath id="${p}bm${i}"><path class="bcut" clip-rule="evenodd" d="${cutPath(-ARM, MED - 1.5)}"/></clipPath>`).join('') +
     `<path id="${p}lp" d="M-76.5 0A76.5 76.5 0 0 1 76.5 0"/></defs>` +
     `<g class="crot"><g class="cbars">${bars}</g><circle class="ccore" r="${RIN + .6}" fill="#fff"/><g class="carcs">${arcs}</g>` +
+    (sphere ? `<g class="csph" opacity="0">` + (sphereURL() ? `<image href="${sphereURL()}" x="-100" y="-100" width="200" height="200"/>` : `<circle r="100" fill="#7A4A9E"/>`) +
+      `<path d="${WIRE}" fill="none" stroke="#fff" stroke-width=".55" stroke-opacity=".9" stroke-linecap="round"/><circle r="99.6" fill="none" stroke="#fff" stroke-width=".8"/></g>` : '') +
     `<g class="clab" opacity="0">${labels}</g><g class="cmeds">${meds}</g>` +
     `<g class="ctxt"><text class="coreA" text-anchor="middle" y="4.6" font-size="12.5" font-weight="600" fill="#0F1C3F" letter-spacing="1.6">FINANCE</text>` +
     `<text class="coreB" opacity="0" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0F1C3F" letter-spacing="1.2"><tspan x="0" y="-11.5">FINANCE</tspan><tspan x="0" y="4.6">DATA</tspan><tspan x="0" y="20.7">PARTNERSHIP</tspan></text>` +
@@ -1706,15 +1748,16 @@ function compassSVG(p) {
     `<g class="cghost" fill="#fff" opacity="0"><circle r="100"/>${ghost}</g></g></svg>`;
 }
 const CE = $('#compass');
-CE.innerHTML = compassSVG('c');
+CE.innerHTML = compassSVG('c', true);
 const q = (c) => $(c, CE), qq = (c) => $$(c, CE);
 const C = {
   el: CE, rot: q('.crot'), bcuts: qq('.bcut'), armsB: qq('.cbars .armb'), armsM: qq('.cmeds .armm'), bars: qq('.cbars .bar'), meds: qq('.cmeds .med'), imgs: qq('.cmeds image'),
   ring: q('.carcs'), arcs: qq('.carcs .arc'), lab: q('.clab'), txt: q('.ctxt'), coreA: q('.coreA'), coreB: q('.coreB'), coreC: q('.coreC'), cc1: q('.cc1'), cc2: q('.cc2'), core: q('.ccore'),
-  ghost: q('.cghost'), gbars: qq('.cghost .gbar'), gmeds: qq('.cghost .gmed'), dock: $('#dock')
+  ghost: q('.cghost'), sph: q('.csph'), gbars: qq('.cghost .gbar'), gmeds: qq('.cghost .gmed'), dock: $('#dock')
 };
 // the navigation map shows the whole graphic, labels on
 (() => { const m = $('#mapCompass'); if (!m) return; m.innerHTML = compassSVG('m'); $('.clab', m).setAttribute('opacity', 1); $('.coreA', m).setAttribute('opacity', 0); $('.coreB', m).setAttribute('opacity', 1); })();
+(() => { const m = $('#interCompass'); if (!m || !reduced) return; m.innerHTML = compassSVG('i'); $('.clab', m).setAttribute('opacity', 1); $('.coreA', m).setAttribute('opacity', 0); $('.coreB', m).setAttribute('opacity', 1); })();
 const cache = new Map();
 function set(el, attr, v) { let m = cache.get(el); if (!m) cache.set(el, m = {}); if (m[attr] !== v) { m[attr] = v; el.setAttribute(attr, v); } }
 
@@ -1722,7 +1765,7 @@ let VW = innerWidth, IH = innerHeight, VH = innerHeight, mobile = false;
 const probe = document.createElement('div'); probe.id = 'probe'; document.body.appendChild(probe);
 
 let menuOpen = false, lastTf = '', lastOp = -1, moving = false, restT = 0, lastPlate = -1;
-const blank = () => ({ x: 0, y: 0, size: 100, rot: 0, e: [1, 1, 1], d: [1, 1, 1], mo: [1, 1, 1], arc: [1, 1, 1], split: 0, white: 0, lab: 0, coreA: 0, coreB: 0, coreC: 0, plate: 0, op: 1, cr: 3000 });
+const blank = () => ({ x: 0, y: 0, size: 100, rot: 0, e: [1, 1, 1], d: [1, 1, 1], mo: [1, 1, 1], arc: [1, 1, 1], split: 0, white: 0, lab: 0, coreA: 0, coreB: 0, coreC: 0, plate: 0, op: 1, cr: 3000, sph: 0, lock: 0 });
 const S = o => Object.assign(blank(), o);
 function mix(a, b, t) {
   const o = {};
@@ -1764,6 +1807,7 @@ function render(s, intro = 1) {
   set(C.coreC, 'opacity', f2(s.coreC));
   set(C.core, 'fill-opacity', f2(1 - clamp(s.split * 1.6)));
   set(C.ghost, 'opacity', f2(s.white));
+  set(C.sph, 'opacity', f2(s.sph)); set(C.sph, 'display', s.sph < .004 ? 'none' : 'inline');
   const pl = f2(s.plate); if (pl !== lastPlate) { lastPlate = pl; C.dock.style.setProperty('--plate', pl); }
   if (!hinted && s.plate > .97 && scrollY > 200) { hinted = true; const h = $('#dockHint'); h.classList.add('show'); setTimeout(() => h.classList.remove('show'), 5200); }
 }
@@ -1809,14 +1853,18 @@ function layout() {
   for (const p of parEls) { const r = p.host.getBoundingClientRect(); p.mid = r.top + scrollY + r.height / 2; }
   keys = []; scenes = [];
   const push = (y, st, e) => keys.push({ y, st, e });
-  let prev = 'all';
+  let prev = 'all', hand = null;
   sections = $$('[data-mode]').map(el => ({ el, top: top(el), h: el.offsetHeight, mode: el.dataset.mode, name: el.dataset.name || '' }));
   if (reduced) { sections.forEach(s => { if (s.mode === 'white') s.mode = 'all'; if (s.mode === 'final') s.mode = 'all'; }); return; }
   sections.forEach(sec => {
     const { el, top: t0, h, mode } = sec, type = el.dataset.scene;
+    const h0 = hand; hand = null;
     if (mode === 'final') {
-      push(t0 - .75 * IH, DOCK(prev));
-      push(maxScroll, S(mobile ? { x: VW * .5, y: IH * .3, size: VW * .62, lab: 1, coreA: 1 } : { x: VW * .25, y: IH * .5, size: Math.min(IH * .62, VW * .4), lab: 1, coreA: 1 }));
+      // the graphic settles onto the last photograph, then rides up with the page to the end
+      const ph = $('.foot-photo', el), pr = ph.getBoundingClientRect(), py = pr.top + scrollY + pr.height / 2 - maxScroll;
+      const F = S({ x: pr.left + pr.width / 2, y: pr.height > IH * .9 ? clamp(py, IH * .3, IH * .62) : py, size: Math.min(IH * .62, pr.width * (mobile ? .68 : .8)), lab: 1, coreA: 1, lock: 1 });
+      const yB = Math.min(maxScroll - 1, maxScroll + F.y - IH), yA = yB - .45 * IH;
+      push(yA, DOCK(prev)); push(yB, F); push(maxScroll, F);
       return;
     }
     if (!type) {
@@ -1850,21 +1898,32 @@ function layout() {
       push(at(.2) + 1, G({ mo: gone })); push(at(.4), G({ mo: gone }));
       const hid = Object.assign(DOCK(mode), { op: 0, plate: 0 });
       push(at(.4) + 1, hid); push(at(.53), hid); push(at(.62), DOCK(mode));
+    } else if (type === 'inter') {
+      const u = Math.min(VH * .92 / 660, VW / 800);
+      const B = mobile ? { x: VW * .5, y: VH * .25, size: Math.min(VW * .7, VH * .36) } : { x: VW * .5, y: VH * .5 - 52 * u, size: 506 * u };
+      const st = d => S(Object.assign({ lab: 1, coreB: 1, d }, B));
+      push(t0 - .5 * VH, DOCK(prev)); push(at(.03), st([1, 1, 1])); push(at(.1), st([1, 1, 1]));
+      push(at(.15), st([1, .28, 1])); push(at(.31), st([1, .28, 1]));
+      push(at(.37), st([1, 1, .28])); push(at(.53), st([1, 1, .28]));
+      push(at(.59), st([.28, 1, 1])); push(at(.76), st([.28, 1, 1]));
+      push(at(.84), st([1, 1, 1])); push(at(1), st([1, 1, 1]));
+      hand = st([1, 1, 1]);
     } else if (type === 'pair') {
       const pr = el.dataset.pair, e = pr === 'cd' ? [1, 0, 1] : pr === 'bd' ? [0, 1, 1] : [1, 1, 0];
       const up = pr === 'bd' ? -.07 : .04;
-      const P = S(mobile ? { x: VW * .5, y: VH * (.25 + up * .6), size: Math.min(VW * .7, VH * .38), e, coreB: 1, lab: 1 } : { x: VW * .27, y: VH * (.5 + up), size: Math.min(VH * .78, VW * .44), e, coreB: 1, lab: 1 });
-      push(t0 - .5 * VH, DOCK(prev)); push(at(.04), P); push(at(1) + .05 * VH, P); push(at(1) + .5 * VH, DOCK(mode));
+      const mo = e.map(v => v ? 1 : 0);   // the arm that retracts fades as it goes
+      const P = S(mobile ? { x: VW * .5, y: VH * (.25 + up * .6), size: Math.min(VW * .7, VH * .38), e, mo, coreB: 1, lab: 1 } : { x: VW * .27, y: VH * (.5 + up), size: Math.min(VH * .78, VW * .44), e, mo, coreB: 1, lab: 1 });
+      push(t0 - .5 * VH, h0 || DOCK(prev)); push(at(.04), P); push(at(1) + .05 * VH, P); push(at(1) + .5 * VH, DOCK(mode));
     } else if (type === 'white') {
       const W = r => S({ x: VW * .5, y: VH * .54, size: Math.min(VH * .57, VW * .84), white: 1, rot: r });
       push(t0 - .5 * VH, DOCK(prev)); push(at(.06), W(-10)); push(at(1), W(10), 'lin'); push(at(1) + .5 * VH, DOCK('all'));
       sec.mode = 'all';
     } else if (type === 'split') {
       const R = Math.min(VH * .3, VW * (mobile ? .36 : .4)), sz = R / 100 * 506, cy = VH * (mobile ? .42 : .56);
-      const A = S({ x: VW * .5, y: cy, size: sz, e: [0, 0, 0], white: 1 }), B = S({ x: VW * .5, y: cy, size: sz, e: [0, 0, 0], split: 1 });
-      push(t0 - .5 * VH, DOCK(prev)); push(at(.06), A); push(at(.4), A); push(at(.56), B); push(at(1) + .05 * VH, B); push(at(1) + .5 * VH, DOCK(mode));
+      const A = r => S({ x: VW * .5, y: cy, size: sz, e: [0, 0, 0], sph: 1, rot: r }), B = S({ x: VW * .5, y: cy, size: sz, e: [0, 0, 0], split: 1 });
+      push(t0 - .5 * VH, DOCK(prev)); push(at(.06), A(-34)); push(at(.4), A(-6), 'lin'); push(at(.56), B); push(at(1) + .05 * VH, B); push(at(1) + .5 * VH, DOCK(mode));
     }
-    prev = (type === 'white' || type === 'hero' || type === 'pillars') ? 'all' : mode;
+    prev = (type === 'white' || type === 'hero' || type === 'pillars' || type === 'inter') ? 'all' : mode;
   });
   keys.sort((a, b) => a.y - b.y);
 }
@@ -1892,6 +1951,7 @@ function update(y) {
     for (const s of sections) if (s.top <= mid) m = s.mode;
     st = DOCK(m);
   } else st = stateAt(y);
+  if (st.lock > 0) st = Object.assign({}, st, { y: st.y + st.lock * (maxScroll - Math.min(maxScroll, scrollY)) });
   let intro = 1;
   if (introOn) { intro = clamp((performance.now() - introT0 - 250) / 2600); if (intro >= 1 || y > 60) { introOn = false; intro = 1; } }
   render(st, intro);
@@ -1918,6 +1978,9 @@ function update(y) {
         const k = (st.size / 506) / UNIT, lr = (Math.max(r, g.r0) / .752) / k;
         mask = `radial-gradient(circle at ${((g.px - st.x) / k + 360).toFixed(1)}px ${((g.py - st.y) / k + 360).toFixed(1)}px, transparent ${lr.toFixed(1)}px, #000 ${(lr + .7).toFixed(1)}px)`;
       }
+    } else if (sc.type === 'inter') {
+      const k = p < .12 ? 0 : p < .34 ? 1 : p < .56 ? 2 : p < .93 ? 3 : 4;
+      if (k !== sc.k) { sc.k = k; sc.el.dataset.step = k; }
     } else if (sc.type === 'split') {
       sc.el.style.setProperty('--mo', (1 - clamp((p - .4) / .14)).toFixed(3));
     }
@@ -1967,6 +2030,8 @@ function observe() {
     (el.matches('[data-count]') ? [el] : $$('[data-count]', el)).forEach(countUp);
   }), { threshold: .14, rootMargin: '0px 0px -7% 0px' });
   $$('.rv').forEach(e => io.observe(e));
+  // a photo credit shows only once its photo has loaded
+  $$('.credit').forEach(c => { const f = c.parentElement, im = $('img', f); if (!im) return; const ok = () => f.classList.add('ld'); if (im.complete && im.naturalWidth) ok(); else im.addEventListener('load', ok, { once: true }); });
   parEls = $$('[data-par]').map(el => { const host = el.parentElement, r = host.getBoundingClientRect(); return { el, host, k: +el.dataset.par, vis: false, mid: r.top + scrollY + r.height / 2 }; });
   // a parallax picture gets its own layer only while it is on screen
   const po = new IntersectionObserver(es => es.forEach(e => { const p = parEls.find(q => q.host === e.target); if (p) { p.vis = e.isIntersecting; p.el.style.willChange = p.vis ? 'transform' : 'auto'; } }), { rootMargin: '20% 0px' });

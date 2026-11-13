@@ -59,11 +59,18 @@ def m_T(arg):
     return esc(raw(arg.strip()))
 
 def m_REC(arg):
-    a, b = [x.strip() for x in arg.split('|')]
+    parts = [x.strip() for x in arg.split('|')]
+    a, b = parts[0], parts[1]
     head = re.sub(r'^\d+\.\s*', '', raw(a))
     if not head.endswith('.'):
         head += '.'
-    return (f'<li class="rec rv"><h4>{esc(head)}</h4><p>{esc(raw(b))}</p></li>')
+    fig = ''
+    if len(parts) > 2:
+        name, alt = parts[2], parts[3]
+        credit = parts[4] if len(parts) > 4 else ''
+        fig = ('<figure class="rec-fig">' + m_IMG(f'{name}|{alt}||{credit}')
+               + (m_CREDIT(credit) if credit else '') + '</figure>')
+    return (f'<li class="rec rv"><div class="rec-txt"><h4>{esc(head)}</h4><p>{esc(raw(b))}</p></div>{fig}</li>')
 
 def m_STAT(arg):
     v, num, cap = [x.strip() for x in arg.split('|', 2)]
@@ -105,12 +112,17 @@ body = expand(tpl)
 css = open(os.path.join(src, 'style.css')).read()
 js = open(os.path.join(src, 'app.js')).read()
 SHORT = dict(hero='Boat on open ocean', male='Mal\u00e9, Maldives', island='Island', harbour='Harbour', turbines='Wind turbines',
-    satcoast='Atoll from space', mangrove='Mangrove planting', rubble='After the storm', celebrate='Celebration', coral='Coral reef',
+    satcoast='Atoll from space', mangrove='Mangrove planting', rubble='After the storm', celebrate='Celebration', coral='Coral reef', coralc='Coral reef', windsunset='Turbines at dusk',
     turtle='Sea turtle', fishfarm='Fish farms', solar='Floating solar', tuna='Digital tuna', atollstrip='Atoll', atolls='Atolls from space',
     beachaerial='Forest and beach', vfarm='Vertical farm', catch='Tuna catch', nasa='Coast from space', ship='Container ship',
     vr='Virtual reef', buoys='Canoe and buoys', mangrovesat='Mangrove channels', windisland='Island wind and solar',
     circuit='Island and circuits', dusk='Turbines at dusk', whales='Whales', swim='Swimmer', beach='Beach')
-cred = ''.join(f'<li><span>{esc(SHORT.get(n, a))}</span> {esc(c)}</li>' for n, (a, c) in CREDITS.items())
+seen, items = set(), []
+for n, (a, c) in CREDITS.items():
+    key = (SHORT.get(n, a), c)
+    if key not in seen:
+        seen.add(key); items.append(key)
+cred = ''.join(f'<li><span>{esc(l)}</span> {esc(c)}</li>' for l, c in items)
 body = body.replace('<!--CREDITS-->', cred)
 out = body.replace('/*__CSS__*/', css).replace('/*__JS__*/', js)
 left = re.findall(r'\[\[[A-Z]+ [^\]]*\]\]', out)

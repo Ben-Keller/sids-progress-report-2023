@@ -144,7 +144,31 @@ function ringURL() {
   } catch (e) { RING_URL = null; }
   return RING_URL;
 }
-function compassSVG(p) {
+// the enablers opener: the report's faceted spectrum sphere, its rim matching the ring
+const WIRE = 'M12.6 1.0L-17.0 11.6M12.6 1.0L0.9 -31.4M12.6 1.0L20.3 30.9M12.6 1.0L36.4 -20.8M12.6 1.0L42.6 15.7M-17.0 11.6L0.9 -31.4M-17.0 11.6L20.3 30.9M-17.0 11.6L-38.4 -8.7M-17.0 11.6L-11.2 39.7M-17.0 11.6L-55.7 15.7M-17.0 11.6L-37.0 52.8M0.9 -31.4L-38.4 -8.7M0.9 -31.4L36.4 -20.8M0.9 -31.4L-22.0 -39.8M0.9 -31.4L17.1 -51.1M0.9 -31.4L-13.8 -67.1M20.3 30.9L-11.2 39.7M20.3 30.9L42.6 15.7M20.3 30.9L12.9 56.2M20.3 30.9L48.4 40.8M-38.4 -8.7L-22.0 -39.8M-38.4 -8.7L-55.7 15.7M-38.4 -8.7L-51.4 -30.8M-38.4 -8.7L-65.7 0.0M36.4 -20.8L42.6 15.7M36.4 -20.8L17.1 -51.1M36.4 -20.8L51.9 -15.2M36.4 -20.8L50.3 -47.0M-11.2 39.7L12.9 56.2M-11.2 39.7L-37.0 52.8M-11.2 39.7L-5.4 72.2M-22.0 -39.8L-51.4 -30.8M-22.0 -39.8L-13.8 -67.1M-22.0 -39.8L-47.1 -56.7M42.6 15.7L51.9 -15.2M42.6 15.7L48.4 40.8M42.6 15.7L70.6 10.3M-55.7 15.7L-37.0 52.8M-55.7 15.7L-65.7 0.0M-55.7 15.7L-58.4 38.5M-55.7 15.7L-82.4 20.3M17.1 -51.1L-13.8 -67.1M17.1 -51.1L50.3 -47.0M17.1 -51.1L20.2 -75.9M17.1 -51.1L47.4 -77.2M12.9 56.2L48.4 40.8M12.9 56.2L-5.4 72.2M12.9 56.2L37.3 75.9M12.9 56.2L12.8 85.8M-51.4 -30.8L-65.7 0.0M-51.4 -30.8L-47.1 -56.7M-51.4 -30.8L-74.2 -28.7M-51.4 -30.8L-66.9 -50.3M51.9 -15.2L50.3 -47.0M51.9 -15.2L70.6 10.3M51.9 -15.2L74.5 -32.3M51.9 -15.2L84.5 -10.2M-37.0 52.8L-5.4 72.2M-37.0 52.8L-58.4 38.5M-37.0 52.8L-32.7 78.9M-37.0 52.8L-59.0 59.3M-13.8 -67.1L-47.1 -56.7M-13.8 -67.1L20.2 -75.9M-13.8 -67.1L-28.7 -76.7M-13.8 -67.1L-1.2 -91.3M48.4 40.8L70.6 10.3M48.4 40.8L37.3 75.9M48.4 40.8L80.3 37.2M48.4 40.8L78.2 62.4M48.4 40.8L55.7 83.1M-65.7 0.0L-74.2 -28.7M-65.7 0.0L-82.4 20.3M-65.7 0.0L-99.9 -4.8M50.3 -47.0L74.5 -32.3M50.3 -47.0L47.4 -77.2M50.3 -47.0L73.2 -50.9M50.3 -47.0L60.2 -79.8M50.3 -47.0L76.5 -64.4M-5.4 72.2L-32.7 78.9M-5.4 72.2L12.8 85.8M-5.4 72.2L-18.3 91.1M-47.1 -56.7L-28.7 -76.7M-47.1 -56.7L-66.9 -50.3M-47.1 -56.7L-76.4 -64.5M-47.1 -56.7L-52.8 -84.9M70.6 10.3L80.3 37.2M70.6 10.3L84.5 -10.2M70.6 10.3L99.9 -3.9M70.6 10.3L97.3 23.1M-58.4 38.5L-82.4 20.3M-58.4 38.5L-59.0 59.3M-58.4 38.5L-86.9 49.5M20.2 -75.9L47.4 -77.2M20.2 -75.9L-1.2 -91.3M20.2 -75.9L12.2 -99.3M20.2 -75.9L35.7 -93.4M37.3 75.9L12.8 85.8M37.3 75.9L55.7 83.1M37.3 75.9L32.5 94.6M-74.2 -28.7L-66.9 -50.3M-74.2 -28.7L-99.9 -4.8M-74.2 -28.7L-96.9 -24.7M-74.2 -28.7L-89.3 -45.0M74.5 -32.3L84.5 -10.2M74.5 -32.3L73.2 -50.9M74.5 -32.3L88.9 -45.7M74.5 -32.3L96.9 -24.7M-32.7 78.9L-59.0 59.3M-32.7 78.9L-18.3 91.1M-32.7 78.9L-32.7 94.5M-32.7 78.9L-54.1 84.1M-28.7 -76.7L-1.2 -91.3M-28.7 -76.7L-52.8 -84.9M-28.7 -76.7L-36.0 -93.3M-28.7 -76.7L-7.0 -99.8M80.3 37.2L97.3 23.1M80.3 37.2L86.9 49.4M80.3 37.2L78.2 62.4M-82.4 20.3L-86.9 49.5M-82.4 20.3L-96.7 25.5M-82.4 20.3L-99.9 -4.8M47.4 -77.2L35.7 -93.4M47.4 -77.2L60.2 -79.8M12.8 85.8L-18.3 91.1M12.8 85.8L32.5 94.6M12.8 85.8L11.9 99.3M12.8 85.8L-14.4 99.0M-66.9 -50.3L-89.3 -45.0M-66.9 -50.3L-76.4 -64.5M84.5 -10.2L99.9 -3.9M84.5 -10.2L96.9 -24.7M-59.0 59.3L-54.1 84.1M-59.0 59.3L-73.9 67.4M-59.0 59.3L-86.9 49.5M-1.2 -91.3L-7.0 -99.8M-1.2 -91.3L12.2 -99.3M73.2 -50.9L76.5 -64.4M73.2 -50.9L88.9 -45.7M-18.3 91.1L-14.4 99.0M-18.3 91.1L-32.7 94.5';
+let SPH_URL;
+function sphereURL() {
+  if (SPH_URL !== undefined) return SPH_URL;
+  try {
+    const N = 640, c = N / 2, cv = document.createElement('canvas'); cv.width = cv.height = N;
+    const x = cv.getContext('2d'), g = x.createConicGradient(-Math.PI / 2, c, c);
+    STOPS.forEach(([a, col]) => g.addColorStop(a / 360, col));
+    x.beginPath(); x.arc(c, c, c, 0, Math.PI * 2); x.clip();
+    x.fillStyle = g; x.fillRect(0, 0, N, N);
+    const m = x.createRadialGradient(c * 1.06, c * 1.16, 0, c * 1.06, c * 1.16, c * .78);
+    m.addColorStop(0, 'rgba(142,58,150,.95)'); m.addColorStop(.45, 'rgba(120,70,160,.5)'); m.addColorStop(1, 'rgba(120,70,160,0)');
+    x.fillStyle = m; x.fillRect(0, 0, N, N);
+    const h = x.createRadialGradient(c * .68, c * .6, 0, c * .68, c * .6, c * .9);
+    h.addColorStop(0, 'rgba(255,255,255,.34)'); h.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = h; x.fillRect(0, 0, N, N);
+    const e = x.createRadialGradient(c, c, c * .72, c, c, c);
+    e.addColorStop(0, 'rgba(8,20,60,0)'); e.addColorStop(1, 'rgba(8,20,60,.26)');
+    x.fillStyle = e; x.fillRect(0, 0, N, N);
+    SPH_URL = cv.toDataURL('image/png');
+  } catch (e) { SPH_URL = null; }
+  return SPH_URL;
+}
+function compassSVG(p, sphere) {
   const SEG = 3, url = ringURL();
   let arcs = '', clips = '';
   for (let k = 0; k < 3; k++) {
@@ -166,6 +190,8 @@ function compassSVG(p) {
     clips + [0, 1, 2].map(i => `<clipPath id="${p}bm${i}"><path class="bcut" clip-rule="evenodd" d="${cutPath(-ARM, MED - 1.5)}"/></clipPath>`).join('') +
     `<path id="${p}lp" d="M-76.5 0A76.5 76.5 0 0 1 76.5 0"/></defs>` +
     `<g class="crot"><g class="cbars">${bars}</g><circle class="ccore" r="${RIN + .6}" fill="#fff"/><g class="carcs">${arcs}</g>` +
+    (sphere ? `<g class="csph" opacity="0">` + (sphereURL() ? `<image href="${sphereURL()}" x="-100" y="-100" width="200" height="200"/>` : `<circle r="100" fill="#7A4A9E"/>`) +
+      `<path d="${WIRE}" fill="none" stroke="#fff" stroke-width=".55" stroke-opacity=".9" stroke-linecap="round"/><circle r="99.6" fill="none" stroke="#fff" stroke-width=".8"/></g>` : '') +
     `<g class="clab" opacity="0">${labels}</g><g class="cmeds">${meds}</g>` +
     `<g class="ctxt"><text class="coreA" text-anchor="middle" y="4.6" font-size="12.5" font-weight="600" fill="#0F1C3F" letter-spacing="1.6">FINANCE</text>` +
     `<text class="coreB" opacity="0" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0F1C3F" letter-spacing="1.2"><tspan x="0" y="-11.5">FINANCE</tspan><tspan x="0" y="4.6">DATA</tspan><tspan x="0" y="20.7">PARTNERSHIP</tspan></text>` +
@@ -173,15 +199,16 @@ function compassSVG(p) {
     `<g class="cghost" fill="#fff" opacity="0"><circle r="100"/>${ghost}</g></g></svg>`;
 }
 const CE = $('#compass');
-CE.innerHTML = compassSVG('c');
+CE.innerHTML = compassSVG('c', true);
 const q = (c) => $(c, CE), qq = (c) => $$(c, CE);
 const C = {
   el: CE, rot: q('.crot'), bcuts: qq('.bcut'), armsB: qq('.cbars .armb'), armsM: qq('.cmeds .armm'), bars: qq('.cbars .bar'), meds: qq('.cmeds .med'), imgs: qq('.cmeds image'),
   ring: q('.carcs'), arcs: qq('.carcs .arc'), lab: q('.clab'), txt: q('.ctxt'), coreA: q('.coreA'), coreB: q('.coreB'), coreC: q('.coreC'), cc1: q('.cc1'), cc2: q('.cc2'), core: q('.ccore'),
-  ghost: q('.cghost'), gbars: qq('.cghost .gbar'), gmeds: qq('.cghost .gmed'), dock: $('#dock')
+  ghost: q('.cghost'), sph: q('.csph'), gbars: qq('.cghost .gbar'), gmeds: qq('.cghost .gmed'), dock: $('#dock')
 };
 // the navigation map shows the whole graphic, labels on
 (() => { const m = $('#mapCompass'); if (!m) return; m.innerHTML = compassSVG('m'); $('.clab', m).setAttribute('opacity', 1); $('.coreA', m).setAttribute('opacity', 0); $('.coreB', m).setAttribute('opacity', 1); })();
+(() => { const m = $('#interCompass'); if (!m || !reduced) return; m.innerHTML = compassSVG('i'); $('.clab', m).setAttribute('opacity', 1); $('.coreA', m).setAttribute('opacity', 0); $('.coreB', m).setAttribute('opacity', 1); })();
 const cache = new Map();
 function set(el, attr, v) { let m = cache.get(el); if (!m) cache.set(el, m = {}); if (m[attr] !== v) { m[attr] = v; el.setAttribute(attr, v); } }
 
@@ -189,7 +216,7 @@ let VW = innerWidth, IH = innerHeight, VH = innerHeight, mobile = false;
 const probe = document.createElement('div'); probe.id = 'probe'; document.body.appendChild(probe);
 
 let menuOpen = false, lastTf = '', lastOp = -1, moving = false, restT = 0, lastPlate = -1;
-const blank = () => ({ x: 0, y: 0, size: 100, rot: 0, e: [1, 1, 1], d: [1, 1, 1], mo: [1, 1, 1], arc: [1, 1, 1], split: 0, white: 0, lab: 0, coreA: 0, coreB: 0, coreC: 0, plate: 0, op: 1, cr: 3000 });
+const blank = () => ({ x: 0, y: 0, size: 100, rot: 0, e: [1, 1, 1], d: [1, 1, 1], mo: [1, 1, 1], arc: [1, 1, 1], split: 0, white: 0, lab: 0, coreA: 0, coreB: 0, coreC: 0, plate: 0, op: 1, cr: 3000, sph: 0, lock: 0 });
 const S = o => Object.assign(blank(), o);
 function mix(a, b, t) {
   const o = {};
@@ -231,6 +258,7 @@ function render(s, intro = 1) {
   set(C.coreC, 'opacity', f2(s.coreC));
   set(C.core, 'fill-opacity', f2(1 - clamp(s.split * 1.6)));
   set(C.ghost, 'opacity', f2(s.white));
+  set(C.sph, 'opacity', f2(s.sph)); set(C.sph, 'display', s.sph < .004 ? 'none' : 'inline');
   const pl = f2(s.plate); if (pl !== lastPlate) { lastPlate = pl; C.dock.style.setProperty('--plate', pl); }
   if (!hinted && s.plate > .97 && scrollY > 200) { hinted = true; const h = $('#dockHint'); h.classList.add('show'); setTimeout(() => h.classList.remove('show'), 5200); }
 }
@@ -276,14 +304,18 @@ function layout() {
   for (const p of parEls) { const r = p.host.getBoundingClientRect(); p.mid = r.top + scrollY + r.height / 2; }
   keys = []; scenes = [];
   const push = (y, st, e) => keys.push({ y, st, e });
-  let prev = 'all';
+  let prev = 'all', hand = null;
   sections = $$('[data-mode]').map(el => ({ el, top: top(el), h: el.offsetHeight, mode: el.dataset.mode, name: el.dataset.name || '' }));
   if (reduced) { sections.forEach(s => { if (s.mode === 'white') s.mode = 'all'; if (s.mode === 'final') s.mode = 'all'; }); return; }
   sections.forEach(sec => {
     const { el, top: t0, h, mode } = sec, type = el.dataset.scene;
+    const h0 = hand; hand = null;
     if (mode === 'final') {
-      push(t0 - .75 * IH, DOCK(prev));
-      push(maxScroll, S(mobile ? { x: VW * .5, y: IH * .3, size: VW * .62, lab: 1, coreA: 1 } : { x: VW * .25, y: IH * .5, size: Math.min(IH * .62, VW * .4), lab: 1, coreA: 1 }));
+      // the graphic settles onto the last photograph, then rides up with the page to the end
+      const ph = $('.foot-photo', el), pr = ph.getBoundingClientRect(), py = pr.top + scrollY + pr.height / 2 - maxScroll;
+      const F = S({ x: pr.left + pr.width / 2, y: pr.height > IH * .9 ? clamp(py, IH * .3, IH * .62) : py, size: Math.min(IH * .62, pr.width * (mobile ? .68 : .8)), lab: 1, coreA: 1, lock: 1 });
+      const yB = Math.min(maxScroll - 1, maxScroll + F.y - IH), yA = yB - .45 * IH;
+      push(yA, DOCK(prev)); push(yB, F); push(maxScroll, F);
       return;
     }
     if (!type) {
@@ -317,21 +349,32 @@ function layout() {
       push(at(.2) + 1, G({ mo: gone })); push(at(.4), G({ mo: gone }));
       const hid = Object.assign(DOCK(mode), { op: 0, plate: 0 });
       push(at(.4) + 1, hid); push(at(.53), hid); push(at(.62), DOCK(mode));
+    } else if (type === 'inter') {
+      const u = Math.min(VH * .92 / 660, VW / 800);
+      const B = mobile ? { x: VW * .5, y: VH * .25, size: Math.min(VW * .7, VH * .36) } : { x: VW * .5, y: VH * .5 - 52 * u, size: 506 * u };
+      const st = d => S(Object.assign({ lab: 1, coreB: 1, d }, B));
+      push(t0 - .5 * VH, DOCK(prev)); push(at(.03), st([1, 1, 1])); push(at(.1), st([1, 1, 1]));
+      push(at(.15), st([1, .28, 1])); push(at(.31), st([1, .28, 1]));
+      push(at(.37), st([1, 1, .28])); push(at(.53), st([1, 1, .28]));
+      push(at(.59), st([.28, 1, 1])); push(at(.76), st([.28, 1, 1]));
+      push(at(.84), st([1, 1, 1])); push(at(1), st([1, 1, 1]));
+      hand = st([1, 1, 1]);
     } else if (type === 'pair') {
       const pr = el.dataset.pair, e = pr === 'cd' ? [1, 0, 1] : pr === 'bd' ? [0, 1, 1] : [1, 1, 0];
       const up = pr === 'bd' ? -.07 : .04;
-      const P = S(mobile ? { x: VW * .5, y: VH * (.25 + up * .6), size: Math.min(VW * .7, VH * .38), e, coreB: 1, lab: 1 } : { x: VW * .27, y: VH * (.5 + up), size: Math.min(VH * .78, VW * .44), e, coreB: 1, lab: 1 });
-      push(t0 - .5 * VH, DOCK(prev)); push(at(.04), P); push(at(1) + .05 * VH, P); push(at(1) + .5 * VH, DOCK(mode));
+      const mo = e.map(v => v ? 1 : 0);   // the arm that retracts fades as it goes
+      const P = S(mobile ? { x: VW * .5, y: VH * (.25 + up * .6), size: Math.min(VW * .7, VH * .38), e, mo, coreB: 1, lab: 1 } : { x: VW * .27, y: VH * (.5 + up), size: Math.min(VH * .78, VW * .44), e, mo, coreB: 1, lab: 1 });
+      push(t0 - .5 * VH, h0 || DOCK(prev)); push(at(.04), P); push(at(1) + .05 * VH, P); push(at(1) + .5 * VH, DOCK(mode));
     } else if (type === 'white') {
       const W = r => S({ x: VW * .5, y: VH * .54, size: Math.min(VH * .57, VW * .84), white: 1, rot: r });
       push(t0 - .5 * VH, DOCK(prev)); push(at(.06), W(-10)); push(at(1), W(10), 'lin'); push(at(1) + .5 * VH, DOCK('all'));
       sec.mode = 'all';
     } else if (type === 'split') {
       const R = Math.min(VH * .3, VW * (mobile ? .36 : .4)), sz = R / 100 * 506, cy = VH * (mobile ? .42 : .56);
-      const A = S({ x: VW * .5, y: cy, size: sz, e: [0, 0, 0], white: 1 }), B = S({ x: VW * .5, y: cy, size: sz, e: [0, 0, 0], split: 1 });
-      push(t0 - .5 * VH, DOCK(prev)); push(at(.06), A); push(at(.4), A); push(at(.56), B); push(at(1) + .05 * VH, B); push(at(1) + .5 * VH, DOCK(mode));
+      const A = r => S({ x: VW * .5, y: cy, size: sz, e: [0, 0, 0], sph: 1, rot: r }), B = S({ x: VW * .5, y: cy, size: sz, e: [0, 0, 0], split: 1 });
+      push(t0 - .5 * VH, DOCK(prev)); push(at(.06), A(-34)); push(at(.4), A(-6), 'lin'); push(at(.56), B); push(at(1) + .05 * VH, B); push(at(1) + .5 * VH, DOCK(mode));
     }
-    prev = (type === 'white' || type === 'hero' || type === 'pillars') ? 'all' : mode;
+    prev = (type === 'white' || type === 'hero' || type === 'pillars' || type === 'inter') ? 'all' : mode;
   });
   keys.sort((a, b) => a.y - b.y);
 }
@@ -359,6 +402,7 @@ function update(y) {
     for (const s of sections) if (s.top <= mid) m = s.mode;
     st = DOCK(m);
   } else st = stateAt(y);
+  if (st.lock > 0) st = Object.assign({}, st, { y: st.y + st.lock * (maxScroll - Math.min(maxScroll, scrollY)) });
   let intro = 1;
   if (introOn) { intro = clamp((performance.now() - introT0 - 250) / 2600); if (intro >= 1 || y > 60) { introOn = false; intro = 1; } }
   render(st, intro);
@@ -385,6 +429,9 @@ function update(y) {
         const k = (st.size / 506) / UNIT, lr = (Math.max(r, g.r0) / .752) / k;
         mask = `radial-gradient(circle at ${((g.px - st.x) / k + 360).toFixed(1)}px ${((g.py - st.y) / k + 360).toFixed(1)}px, transparent ${lr.toFixed(1)}px, #000 ${(lr + .7).toFixed(1)}px)`;
       }
+    } else if (sc.type === 'inter') {
+      const k = p < .12 ? 0 : p < .34 ? 1 : p < .56 ? 2 : p < .93 ? 3 : 4;
+      if (k !== sc.k) { sc.k = k; sc.el.dataset.step = k; }
     } else if (sc.type === 'split') {
       sc.el.style.setProperty('--mo', (1 - clamp((p - .4) / .14)).toFixed(3));
     }
@@ -434,6 +481,8 @@ function observe() {
     (el.matches('[data-count]') ? [el] : $$('[data-count]', el)).forEach(countUp);
   }), { threshold: .14, rootMargin: '0px 0px -7% 0px' });
   $$('.rv').forEach(e => io.observe(e));
+  // a photo credit shows only once its photo has loaded
+  $$('.credit').forEach(c => { const f = c.parentElement, im = $('img', f); if (!im) return; const ok = () => f.classList.add('ld'); if (im.complete && im.naturalWidth) ok(); else im.addEventListener('load', ok, { once: true }); });
   parEls = $$('[data-par]').map(el => { const host = el.parentElement, r = host.getBoundingClientRect(); return { el, host, k: +el.dataset.par, vis: false, mid: r.top + scrollY + r.height / 2 }; });
   // a parallax picture gets its own layer only while it is on screen
   const po = new IntersectionObserver(es => es.forEach(e => { const p = parEls.find(q => q.host === e.target); if (p) { p.vis = e.isIntersecting; p.el.style.willChange = p.vis ? 'transform' : 'auto'; } }), { rootMargin: '20% 0px' });
