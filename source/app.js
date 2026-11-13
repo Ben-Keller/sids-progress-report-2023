@@ -123,6 +123,7 @@ function ringColor(a) {
   }
   return STOPS[0][1];
 }
+const f2 = v => (Math.round(v * 100) / 100);
 const pol = (r, deg) => { const t = (deg - 90) * Math.PI / 180; return [(r * Math.cos(t)).toFixed(2), (r * Math.sin(t)).toFixed(2)]; };
 function sector(a0, a1) {
   const [x0, y0] = pol(100, a0), [x1, y1] = pol(100, a1), [x2, y2] = pol(RIN, a1), [x3, y3] = pol(RIN, a0);
@@ -130,47 +131,65 @@ function sector(a0, a1) {
 }
 const MEDS = ['climate', 'blue', 'digital'];
 const ARMGRAD = [['#27813A', '#2F9042'], ['#6450AE', '#5762BC'], ['#F28C1E', '#F9C20F']];
+const cutPath = (cy, r) => `M-80 -280h160v300h-160zM${f2(-r)} ${f2(cy)}a${f2(r)} ${f2(r)} 0 1 0 ${f2(2 * r)} 0a${f2(r)} ${f2(r)} 0 1 0 ${f2(-2 * r)} 0z`;
+let RING_URL;
+function ringURL() {
+  if (RING_URL !== undefined) return RING_URL;
+  try {
+    const N = 1024, cv = document.createElement('canvas'); cv.width = cv.height = N;
+    const x = cv.getContext('2d'), g = x.createConicGradient(-Math.PI / 2, N / 2, N / 2);
+    STOPS.forEach(([a, c]) => g.addColorStop(a / 360, c));
+    x.fillStyle = g; x.beginPath(); x.arc(N / 2, N / 2, N / 2, 0, Math.PI * 2); x.arc(N / 2, N / 2, N / 2 * RIN / 100, 0, Math.PI * 2, true); x.fill('evenodd');
+    RING_URL = cv.toDataURL('image/png');
+  } catch (e) { RING_URL = null; }
+  return RING_URL;
+}
 function compassSVG(p) {
-  const SEG = 3;
-  let arcs = '';
+  const SEG = 3, url = ringURL();
+  let arcs = '', clips = '';
   for (let k = 0; k < 3; k++) {
     arcs += `<g class="arc" data-k="${k}">`;
-    for (let a = k * 120; a < k * 120 + 120; a += SEG) { const col = ringColor(a + SEG / 2); arcs += `<path class="sg" d="${sector(a, a + SEG)}" fill="${col}" stroke="${col}" stroke-width=".8"/>`; }
+    if (url) {
+      const [x0, y0] = pol(112, k * 120), [x1, y1] = pol(112, k * 120 + 120);
+      clips += `<clipPath id="${p}ac${k}"><path d="M0 0L${x0} ${y0}A112 112 0 0 1 ${x1} ${y1}Z"/></clipPath>`;
+      arcs += `<image href="${url}" x="-100" y="-100" width="200" height="200" clip-path="url(#${p}ac${k})"/>`;
+    } else for (let a = k * 120; a < k * 120 + 120; a += SEG) { const col = ringColor(a + SEG / 2); arcs += `<path class="sg" d="${sector(a, a + SEG)}" fill="${col}" stroke="${col}" stroke-width=".8"/>`; }
     arcs += '</g>';
   }
-  const bars = ANG.map((a, i) => `<g class="armb" transform="rotate(${a})"><rect class="bar" x="${-HALF}" width="${HALF * 2}" y="${-ARM}" height="${ARM}" fill="url(#${p}ag${i})"/></g>`).join('');
+  const bars = ANG.map((a, i) => `<g class="armb" transform="rotate(${a})"><rect class="bar" x="${-HALF}" width="${HALF * 2}" y="${-ARM}" height="${ARM}" fill="url(#${p}ag${i})" clip-path="url(#${p}bm${i})"/></g>`).join('');
   const meds = ANG.map((a, i) => `<g class="armm" transform="rotate(${a})"><g class="med" transform="translate(0,${-ARM})"><image href="assets/med-${MEDS[i]}.webp" x="${-MED}" y="${-MED}" width="${MED * 2}" height="${MED * 2}" transform="rotate(${-a})"/></g></g>`).join('');
   const ghost = ANG.map(a => `<g transform="rotate(${a})"><rect class="gbar" x="${-HALF}" width="${HALF * 2}" y="${-ARM}" height="${ARM}"/><circle class="gmed" r="${MED}" transform="translate(0,${-ARM})"/></g>`).join('');
   const labels = ['CLIMATE', 'BLUE', 'DIGITAL'].map((t, i) =>
     `<g transform="rotate(${ANG[i]})"><text font-size="12.5" font-weight="500" fill="#fff" letter-spacing="1.6" text-anchor="middle"><textPath href="#${p}lp" startOffset="50%">${t}</textPath></text></g>`).join('');
   return `<svg viewBox="-260 -260 520 520" xmlns="http://www.w3.org/2000/svg"><defs>` +
     ARMGRAD.map((g, i) => `<linearGradient id="${p}ag${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${g[0]}"/><stop offset="1" stop-color="${g[1]}"/></linearGradient>`).join('') +
+    clips + [0, 1, 2].map(i => `<clipPath id="${p}bm${i}"><path class="bcut" clip-rule="evenodd" d="${cutPath(-ARM, MED - 1.5)}"/></clipPath>`).join('') +
     `<path id="${p}lp" d="M-76.5 0A76.5 76.5 0 0 1 76.5 0"/></defs>` +
     `<g class="crot"><g class="cbars">${bars}</g><circle class="ccore" r="${RIN + .6}" fill="#fff"/><g class="carcs">${arcs}</g>` +
     `<g class="clab" opacity="0">${labels}</g><g class="cmeds">${meds}</g>` +
     `<g class="ctxt"><text class="coreA" text-anchor="middle" y="4.6" font-size="12.5" font-weight="600" fill="#0F1C3F" letter-spacing="1.6">FINANCE</text>` +
-    `<text class="coreB" opacity="0" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0F1C3F" letter-spacing="1.2"><tspan x="0" y="-11.5">FINANCE</tspan><tspan x="0" y="4.6">DATA</tspan><tspan x="0" y="20.7">PARTNERSHIP</tspan></text></g>` +
+    `<text class="coreB" opacity="0" text-anchor="middle" font-size="12.5" font-weight="600" fill="#0F1C3F" letter-spacing="1.2"><tspan x="0" y="-11.5">FINANCE</tspan><tspan x="0" y="4.6">DATA</tspan><tspan x="0" y="20.7">PARTNERSHIP</tspan></text>` +
+    `<text class="coreC" opacity="0" text-anchor="middle" font-weight="600" letter-spacing="1.2"><tspan class="cc1" x="0" y="-3" font-size="13.5"></tspan><tspan class="cc2" x="0" y="14" font-size="13.5"></tspan></text></g>` +
     `<g class="cghost" fill="#fff" opacity="0"><circle r="100"/>${ghost}</g></g></svg>`;
 }
 const CE = $('#compass');
 CE.innerHTML = compassSVG('c');
 const q = (c) => $(c, CE), qq = (c) => $$(c, CE);
 const C = {
-  el: CE, rot: q('.crot'), armsB: qq('.cbars .armb'), armsM: qq('.cmeds .armm'), bars: qq('.cbars .bar'), meds: qq('.cmeds .med'), imgs: qq('.cmeds image'),
-  arcs: qq('.carcs .arc'), segs: qq('.carcs .sg'), lab: q('.clab'), txt: q('.ctxt'), coreA: q('.coreA'), coreB: q('.coreB'), core: q('.ccore'),
+  el: CE, rot: q('.crot'), bcuts: qq('.bcut'), armsB: qq('.cbars .armb'), armsM: qq('.cmeds .armm'), bars: qq('.cbars .bar'), meds: qq('.cmeds .med'), imgs: qq('.cmeds image'),
+  ring: q('.carcs'), arcs: qq('.carcs .arc'), lab: q('.clab'), txt: q('.ctxt'), coreA: q('.coreA'), coreB: q('.coreB'), coreC: q('.coreC'), cc1: q('.cc1'), cc2: q('.cc2'), core: q('.ccore'),
   ghost: q('.cghost'), gbars: qq('.cghost .gbar'), gmeds: qq('.cghost .gmed'), dock: $('#dock')
 };
 // the navigation map shows the whole graphic, labels on
 (() => { const m = $('#mapCompass'); if (!m) return; m.innerHTML = compassSVG('m'); $('.clab', m).setAttribute('opacity', 1); $('.coreA', m).setAttribute('opacity', 0); $('.coreB', m).setAttribute('opacity', 1); })();
 const cache = new Map();
 function set(el, attr, v) { let m = cache.get(el); if (!m) cache.set(el, m = {}); if (m[attr] !== v) { m[attr] = v; el.setAttribute(attr, v); } }
-const f2 = v => (Math.round(v * 100) / 100);
 
 let VW = innerWidth, IH = innerHeight, VH = innerHeight, mobile = false;
 const probe = document.createElement('div'); probe.id = 'probe'; document.body.appendChild(probe);
 
-let menuOpen = false;
-const blank = () => ({ x: 0, y: 0, size: 100, rot: 0, e: [1, 1, 1], d: [1, 1, 1], mo: [1, 1, 1], arc: [1, 1, 1], split: 0, white: 0, lab: 0, coreA: 0, coreB: 0, plate: 0, op: 1, cr: 3000 });
+let menuOpen = false, lastTf = '', lastOp = -1, moving = false, restT = 0, lastPlate = -1;
+const blank = () => ({ x: 0, y: 0, size: 100, rot: 0, e: [1, 1, 1], d: [1, 1, 1], mo: [1, 1, 1], arc: [1, 1, 1], split: 0, white: 0, lab: 0, coreA: 0, coreB: 0, coreC: 0, plate: 0, op: 1, cr: 3000 });
 const S = o => Object.assign(blank(), o);
 function mix(a, b, t) {
   const o = {};
@@ -179,14 +198,21 @@ function mix(a, b, t) {
 }
 function render(s, intro = 1) {
   const sc = s.size / 506;                                   // px per unit
-  C.el.style.transform = `translate3d(${f2(s.x - 360 * sc / UNIT)}px,${f2(s.y - 360 * sc / UNIT)}px,0) scale(${(sc / UNIT).toFixed(4)})`;
-  C.el.style.opacity = menuOpen ? 0 : f2(s.op);
+  const tf = `translate3d(${f2(s.x - 360 * sc / UNIT)}px,${f2(s.y - 360 * sc / UNIT)}px,0) scale(${(sc / UNIT).toFixed(4)})`;
+  if (tf !== lastTf) {
+    lastTf = tf; C.el.style.transform = tf;
+    if (!moving) { moving = true; C.el.style.willChange = 'transform'; }
+    clearTimeout(restT); restT = setTimeout(() => { moving = false; C.el.style.willChange = 'auto'; }, 260);
+  }
+  const op = menuOpen ? 0 : f2(s.op);
+  if (op !== lastOp) { lastOp = op; C.el.style.opacity = op; }
   set(C.rot, 'transform', `rotate(${f2(s.rot)})`);
   for (let i = 0; i < 3; i++) {
     const e = clamp(s.e[i]) * (intro < 1 ? ease(clamp((intro - .38 - i * .13) / .42)) : 1);
     const D = ARM * e, ms = Math.min(1, e * 2.2);
     for (const gEl of [C.armsB[i], C.armsM[i]]) { set(gEl, 'opacity', f2(s.d[i])); set(gEl, 'display', e < .004 ? 'none' : 'inline'); }
     set(C.bars[i], 'y', f2(-D)); set(C.bars[i], 'height', f2(D));
+    set(C.bcuts[i], 'd', cutPath(-D, Math.max(.01, MED * ms - 1.5)));
     set(C.meds[i], 'transform', `translate(0,${f2(-D)}) scale(${f2(ms)})`);
     set(C.meds[i], 'opacity', f2(s.mo[i]));
     set(C.imgs[i], 'transform', `rotate(${f2(-(ANG[i] + s.rot))})`);
@@ -196,15 +222,16 @@ function render(s, intro = 1) {
     set(C.arcs[i], 'transform', `translate(${f2(g * Math.cos(mid))},${f2(g * Math.sin(mid))})`);
     set(C.arcs[i], 'opacity', f2(s.arc[i]));
   }
-  if (intro < 1) { const n = Math.floor(clamp(intro / .5) * C.segs.length); C.segs.forEach((p, j) => set(p, 'visibility', j < n ? 'visible' : 'hidden')); set(C.core, 'opacity', f2(clamp(intro / .3))); }
-  else if (render.introDone !== true) { C.segs.forEach(p => set(p, 'visibility', 'visible')); set(C.core, 'opacity', 1); render.introDone = true; }
+  if (intro < 1) { const t = ease(clamp(intro / .55)); set(C.ring, 'transform', `rotate(${f2((1 - t) * -150)})`); set(C.ring, 'opacity', f2(clamp(intro / .3))); set(C.core, 'opacity', f2(clamp(intro / .3))); }
+  else if (render.introDone !== true) { set(C.ring, 'transform', 'rotate(0)'); set(C.ring, 'opacity', 1); set(C.core, 'opacity', 1); render.introDone = true; }
   set(C.lab, 'opacity', f2(s.lab * (intro < 1 ? clamp((intro - .5) / .3) : 1)));
   set(C.txt, 'transform', `rotate(${f2(-s.rot)})`);
   set(C.coreA, 'opacity', f2(s.coreA * (intro < 1 ? clamp((intro - .8) / .2) : 1)));
   set(C.coreB, 'opacity', f2(s.coreB));
+  set(C.coreC, 'opacity', f2(s.coreC));
   set(C.core, 'fill-opacity', f2(1 - clamp(s.split * 1.6)));
   set(C.ghost, 'opacity', f2(s.white));
-  C.dock.style.setProperty('--plate', f2(s.plate));
+  const pl = f2(s.plate); if (pl !== lastPlate) { lastPlate = pl; C.dock.style.setProperty('--plate', pl); }
   if (!hinted && s.plate > .97 && scrollY > 200) { hinted = true; const h = $('#dockHint'); h.classList.add('show'); setTimeout(() => h.classList.remove('show'), 5200); }
 }
 let hinted = reduced;
@@ -246,6 +273,7 @@ function portalGeom(i) {
 function layout() {
   VW = root.clientWidth; IH = innerHeight; VH = probe.offsetHeight || innerHeight; mobile = VW < 900;
   maxScroll = Math.max(1, root.scrollHeight - IH);
+  for (const p of parEls) { const r = p.host.getBoundingClientRect(); p.mid = r.top + scrollY + r.height / 2; }
   keys = []; scenes = [];
   const push = (y, st, e) => keys.push({ y, st, e });
   let prev = 'all';
@@ -282,7 +310,7 @@ function layout() {
     } else if (type === 'portal') {
       const i = +el.dataset.pillar, g = portalGeom(i); scn.g = g; scn.i = i;
       const only = [0, 0, 0]; only[i] = 1;
-      const G = x => S(Object.assign({ x: g.cx, y: g.cy, size: g.size, rot: -ANG[i], e: only.slice() }, x || {}));
+      const G = x => S(Object.assign({ x: g.cx, y: g.cy, size: g.size, rot: -ANG[i], e: only.slice(), coreC: 1 }, x || {}));
       const gone = [1, 1, 1]; gone[i] = 0;
       push(t0 - .5 * VH, DOCK(prev));
       push(at(.05), G()); push(at(.2), G());
@@ -320,7 +348,8 @@ function stateAt(y) {
 
 /* ---- per-frame update ---- */
 const spine = $('#spineFill'), where = $('#dockWhere');
-let lastMask = 'none';
+let lastMask = 'none', lastClip = 'none', coreFor = -1, lastSp = '';
+const CORE_NAMES = [['CLIMATE', 'ACTION', 13.5, '#1F6B2E'], ['BLUE', 'ECONOMY', 13.5, '#4F49AE'], ['DIGITAL', 'TRANSFORMATION', 9.6, '#D9531A']];
 let parEls = [], curName = '', introT0 = performance.now(), introOn = !reduced && scrollY < 40;
 function update(y) {
   // compass
@@ -334,13 +363,14 @@ function update(y) {
   if (introOn) { intro = clamp((performance.now() - introT0 - 250) / 2600); if (intro >= 1 || y > 60) { introOn = false; intro = 1; } }
   render(st, intro);
   // scenes
-  let mask = 'none';
+  let mask = 'none', clip = 'none';
   if (!reduced) for (const sc of scenes) {
     if (y < sc.t0 - VH * 1.2 || y > sc.t0 + sc.span + VH * 1.2) continue;
     const p = (y - sc.t0) / sc.span;
-    sc.el.style.setProperty('--p', clamp(p).toFixed(4));
+    const pv = clamp(p).toFixed(3); if (pv !== sc.pv) { sc.pv = pv; if (sc.type === 'hero') sc.el.style.setProperty('--p', pv); }
     for (const o of sc.ons) o.n.classList.toggle('on', p >= o.r[0] && p < o.r[1]);
     if (sc.type === 'portal') {
+      if (coreFor !== sc.i) { coreFor = sc.i; const n = CORE_NAMES[sc.i]; C.cc1.textContent = n[0]; C.cc2.textContent = n[1]; C.cc2.setAttribute('font-size', n[2]); C.coreC.setAttribute('fill', n[3]); }
       const g = sc.g, t = clamp((p - .22) / .3), tt = t * t * (3 - 2 * t);
       const R = Math.hypot(Math.max(g.px, VW - g.px), Math.max(g.py, VH - g.py)) * 1.04;
       const r = p < .2 ? 0 : g.r0 * Math.pow(R / g.r0, tt);
@@ -361,18 +391,19 @@ function update(y) {
   }
   if (mask === 'none' && st.cr < 2500) {   // docked and zoomed: crop to the dock's disc
     const k = (st.size / 506) / UNIT;
-    mask = `radial-gradient(circle at ${((DX - st.x) / k + 360).toFixed(1)}px ${((DY - st.y) / k + 360).toFixed(1)}px, #000 ${(st.cr / k).toFixed(1)}px, transparent ${(st.cr / k + .8).toFixed(1)}px)`;
+    clip = `circle(${(st.cr / k).toFixed(1)}px at ${((DX - st.x) / k + 360).toFixed(1)}px ${((DY - st.y) / k + 360).toFixed(1)}px)`;
   }
+  if (clip !== lastClip) { lastClip = clip; C.el.style.clipPath = clip; }
   if (mask !== lastMask) { lastMask = mask; C.el.style.webkitMaskImage = mask; C.el.style.maskImage = mask; }
   // spine + dock label
-  spine.style.setProperty('--sp', clamp(y / maxScroll).toFixed(4));
+  const sp = clamp(y / maxScroll).toFixed(3); if (sp !== lastSp) { lastSp = sp; spine.style.setProperty('--sp', sp); }
   const mid = y + IH * .5; let nm = sections.length ? sections[0].name : '';
   for (const s of sections) if (s.top <= mid) nm = s.name; else break;
   if (nm !== curName) { curName = nm; where.textContent = nm; }
   // parallax
   if (!reduced) for (const p of parEls) {
     if (!p.vis) continue;
-    const r = p.host.getBoundingClientRect(), d = (r.top + r.height / 2) - IH / 2;
+    const d = (p.mid - y) - IH / 2;
     p.el.style.transform = `translate3d(0,${(-d * p.k).toFixed(1)}px,0)`;
   }
 }
@@ -403,8 +434,9 @@ function observe() {
     (el.matches('[data-count]') ? [el] : $$('[data-count]', el)).forEach(countUp);
   }), { threshold: .14, rootMargin: '0px 0px -7% 0px' });
   $$('.rv').forEach(e => io.observe(e));
-  parEls = $$('[data-par]').map(el => ({ el, host: el.parentElement, k: +el.dataset.par, vis: false }));
-  const po = new IntersectionObserver(es => es.forEach(e => { const p = parEls.find(q => q.host === e.target); if (p) p.vis = e.isIntersecting; }), { rootMargin: '20% 0px' });
+  parEls = $$('[data-par]').map(el => { const host = el.parentElement, r = host.getBoundingClientRect(); return { el, host, k: +el.dataset.par, vis: false, mid: r.top + scrollY + r.height / 2 }; });
+  // a parallax picture gets its own layer only while it is on screen
+  const po = new IntersectionObserver(es => es.forEach(e => { const p = parEls.find(q => q.host === e.target); if (p) { p.vis = e.isIntersecting; p.el.style.willChange = p.vis ? 'transform' : 'auto'; } }), { rootMargin: '20% 0px' });
   parEls.forEach(p => po.observe(p.host));
 }
 
@@ -572,6 +604,12 @@ $$('.udots').forEach(d => { const n = +d.dataset.n, k = +d.dataset.k; d.innerHTM
   sel(0); setPP();
   if (ok) new IntersectionObserver(es => es.forEach(e => { inview = e.isIntersecting; if (inview && !paused) tryPlay(v); else v.pause(); }), { threshold: .35 }).observe(P);
 })();
+
+/* ---- looping animations only run while their section is on screen ---- */
+if ('IntersectionObserver' in window) {
+  const lo = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('live', e.isIntersecting)), { rootMargin: '10% 0px' });
+  $$('#offices,#wheel,.hero').forEach(el => lo.observe(el));
+}
 
 /* ---- go ---- */
 buildCharts();
